@@ -1,6 +1,18 @@
-import pyautogui as py
+from Logger import app_logger
+import Logger
 
 
-Others = py.locateCenterOnScreen(r'C:\Users\hamid\Desktop\Instagram Code\InstagramCode\Main\Images\others.png',
-                                 region=(1000, 800, 600, 200), confidence=0.7)
-print(Others)
+def main():
+
+    # Example log messages
+    app_logger.info('This is an info message')
+    app_logger.warning('This is a warning message')
+    app_logger.error('This is an error message')
+
+    # Capture a screenshot and log its path
+    screenshot_path = Logger.capture_screenshot()
+    app_logger.info(f'Screenshot captured: {screenshot_path}')
+
+
+if __name__ == "__main__":
+    main()

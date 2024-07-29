@@ -1,13 +1,18 @@
-import HumanMove as hu
+import pygetwindow as gw
+from Logger import app_logger
+import Logger
+import lib_HumanMove as hu
 import time
 import pyautogui as py
 import random
 import sys
-import MoveToPosition as mp
+import lib_MoveToPosition as mp
 import tkinter as t
 from tkinter import ttk
 import os
 import platform
+import lib_OpenFollowinPage as openpage
+import lib_Follwoing as Following
 
 
 def clear_terminal():
@@ -42,13 +47,14 @@ def get_screen_resolution():
 
 
 def EnterUrl(Nameurl):
-    hu.HumanLikeMove(593 + random.randint(-10, 10), 54)
-    time.sleep(random.uniform(0.5, 0.8))
-    hu.HumanLikeClick()
-    with py.hold('ctrl'):
-        py.press(['a'])
-    time.sleep(random.uniform(0.5, 0.8))
-    py.press('backspace')
+    chrome_window = gw.getWindowsWithTitle('Google Chrome')[0]
+    chrome_window.activate()
+    time.sleep(0.5)
+    # Send Alt+D to focus the address bar
+    py.hotkey('alt', 'd')
+
+    # Wait for a short time to ensure the address bar is focused
+    time.sleep(0.5)
     hu.HumanLikeKeyboard(Nameurl)
     time.sleep(random.uniform(0.5, 0.8))
     py.press('enter')
@@ -74,6 +80,15 @@ def ProcessBar():
 
 
 if __name__ == "__main__":
+    clear_terminal()
+    ProcessBar()
+    TargetName = "partoo333"
+    Number_of_following = 15
+    following_flag = 1
+    page_opener = openpage.OpeningFollowingPage()
+    Follow_p = Following.Following(Number_of_following)
+
+    ChangeTheProcessBar('Openning the webpage ...')
 
     width, height = get_screen_resolution()
     print(f"Current screen resolution: {width}x{height}")
@@ -81,15 +96,31 @@ if __name__ == "__main__":
     # Check if the resolution is 1920x1080
     if width != 1920 or height != 1080:
         print("Screen resolution is not 1920x1080. Terminating the script.")
+        app_logger.error(
+            'Screen resolution is not 1920x1080. Terminating the script.')
         sys.exit(1)
 
-    # If the resolution is 1920x1080, proceed with the rest of the script
-    print("Screen resolution is 1920x1080. Continuing with the script.")
-
-    clear_terminal()
-    ProcessBar()
-    TargetName = "mizmamoshavere"
-    # Move to homepage
-    # mp.Move("home")
-    EnterUrl("www.instagram.com/"+TargetName)
     ChangeTheProcessBar('Starting Following ...')
+    # openpage()
+
+    start_time = time.time()
+    end_time = time.time()
+    while True:
+
+        if (end_time-start_time > 3600):
+            following_flag == 0
+            start_time = time.time()
+
+        if following_flag == 1:
+            ChangeTheProcessBar('Openning the webpage ...')
+            EnterUrl("www.instagram.com/"+TargetName)
+            ChangeTheProcessBar('Following ...')
+            page_opener.chose_post()
+            page_opener.openfollowingpage()
+            Follow_p.Finding_follow_buttom()
+
+            following_flag = 0
+        while 3600-time.time() > 0:
+            hu.HumanLikeWait(20, 100, 100)
+            time.sleep(300)
+        end_time = time.time()
