@@ -18,6 +18,13 @@ def locateOnScreen(image_path, region=None, confidence=0.7):
         return None
 
 
+def locateAllOnScreen(image_path, region=None, confidence=0.7):
+    try:
+        return py.locateAllOnScreen(image_path, region=region, confidence=confidence)
+    except py.ImageNotFoundException:
+        return None
+
+
 def clear_terminal():
     """
     Clears the terminal screen.
@@ -64,7 +71,6 @@ class Following:
         # 0 means it is under process
 
         # 1 means it is over
-        # 2 means cannot see the post
         # 3 cannot open followers page
         # 4 end of post
         # 10 means it is ended
@@ -76,19 +82,26 @@ class Following:
         self.initialize()
 
     def initialize(self):
-        with open('my_list.json', 'r') as file:
-            self.saved_following = json.load(file)
+        if os.path.exists('my_list.json'):
+            with open('my_list.json', 'r') as file:
+                self.saved_following = json.load(file)
+        else:
+            self.saved_following = []
         print('Follower list has oppened ...')
         print('Starting Following ...')
 
     def Finding_follow_buttom(self):
+        print("10")
         while True:
-            FollowButtom = list(py.locateAllOnScreen(
+            time.sleep(random.uniform(0.8, 1))
+            print("11")
+            FollowButtom = list(locateAllOnScreen(
                 'images/FollowButtom.png', region=(700, 300, 500, 500), confidence=0.9))
+            print("12")
             time.sleep(random.uniform(0.5, 0.9))
             # start following
 
-            if len(FollowButtom) != 0:
+            if len(FollowButtom) != None:
                 for pos in FollowButtom:
                     pos = py.center(pos)
                     hu.HumanLikeMove(pos[0]+random.randint(-15, 15)-240,
@@ -101,9 +114,12 @@ class Following:
                     with py.hold('ctrl'):
                         py.click()
                     time.sleep(random.uniform(0.8, 1))
-                    py.moveRel(400, 0, 0.6)
+                    py.moveRel(-150, 0, 0.6)
                     time.sleep(random.uniform(0.8, 1))
-                self.Open_pages()
+                # ceheck the following is over or not
+                if self.Open_pages() == 1:
+                    print("222")
+                    return
 
             time.sleep(2)
             # scroll
@@ -111,18 +127,28 @@ class Following:
             # im.save('endofthepost_image__before.jpg')
 
             time.sleep(random.uniform(0.8, 1.2))
+            print("1")
             hu.HumanLikeMove(1000+random.randint(-10, 10),
                              550+random.randint(-20, 20),)
+            print("2")
             time.sleep(random.uniform(0.8, 1.2))
+            print("3")
             NowScroll = random.randint(-500, -300)
+            print("4")
             hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
+            print("5")
+            time.sleep(random.uniform(0.8, 1.2))
+            print("6")
             im1 = ImageGrab.grab(bbox=(765, 377, 1130, 755))
-            # im1.save('endofthepost_image__after.jpg')
+            print("7")
+            im1.save('endofthepost_image__after.jpg')
+            print("8")
             EndOfScroll = locateOnScreen(im, confidence=0.9)
+            print("9")
 
             if EndOfScroll != None:
                 print('End of scroll,lets go to the next post!')
-                im1.save('endofthepost_image__after.jpg')
+                # im1.save('endofthepost_image__after.jpg')
                 self.situation = 4
                 return self.Followed, self.situation
 
@@ -180,19 +206,19 @@ class Following:
                         time.sleep(random.uniform(1, 1.4))
 
                         self.Followed += 1
+                        print(self.Followed)
+                        print(self.Following_Number)
 
                         if self.Followed >= self.Following_Number:
                             while True:
                                 time.sleep(random.uniform(0.5, 0.7))
                                 Name_Of_page = copyurlUrl()
                                 time.sleep(random.uniform(0.5, 0.7))
-                                username = Name_Of_page.split(
-                                    "www.instagram.com/")[-1].rstrip('/')
                                 if Homepage == Name_Of_page:
                                     with open('my_list.json', 'w') as file:
                                         json.dump(self.saved_following, file)
                                         self.situation = 10
-                                        return
+                                        return 1
                                 else:
                                     py.hotkey('ctrl', 'w')
                         time.sleep(random.uniform(0.4, 0.8))

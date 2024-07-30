@@ -83,7 +83,7 @@ if __name__ == "__main__":
     clear_terminal()
     ProcessBar()
     TargetName = "partoo333"
-    Number_of_following = 15
+    Number_of_following = 10
     following_flag = 1
     page_opener = openpage.OpeningFollowingPage()
     Follow_p = Following.Following(Number_of_following)
@@ -104,12 +104,9 @@ if __name__ == "__main__":
     # openpage()
 
     start_time = time.time()
-    end_time = time.time()
     while True:
-
-        if (end_time-start_time > 3600):
-            following_flag == 0
-            start_time = time.time()
+        start_time = time.time()
+        following_flag == 0
 
         if following_flag == 1:
             ChangeTheProcessBar('Openning the webpage ...')
@@ -120,7 +117,6 @@ if __name__ == "__main__":
             Follow_p.Finding_follow_buttom()
 
             following_flag = 0
-        while 3600-time.time() > 0:
-            hu.HumanLikeWait(20, 100, 100)
+        while 1800-(time.time()-start_time) > 0:
+            hu.HumanLikeWDDDDait(20, 50, 50)
             time.sleep(300)
-        end_time = time.time()
