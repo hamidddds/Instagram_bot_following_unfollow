@@ -97,6 +97,11 @@ class Following:
                 self.saved_following = json.load(file)
         else:
             self.saved_following = []
+        if os.path.exists('my_list.json'):
+            with open('Finish_following_posts.json', 'r') as file:
+                self.finished_following_post = json.load(file)
+        else:
+            self.finished_following_post = []
         print('Follower list has oppened ...')
         print('Starting Following ...')
 
@@ -105,11 +110,14 @@ class Following:
         check = self.CheckValidity()
         if check == 0:
             print("cannot open following box")
-            return
+            return 0
 
         hu.HumanLikeMove(510+random.randint(-10, 10),
                          400+random.randint(-20, 20),)
-        self.scoroll()
+        a = self.scoroll()
+        if 1 == 0:  # end of the scroll
+            self.PostNum = self.PostNum+1
+            return 0
 
         while True:
             time.sleep(random.uniform(0.8, 1))
@@ -141,15 +149,9 @@ class Following:
                 # ceheck the following is over or not
                 if self.Open_pages() == 1:
                     print("Done with following")
-                    return
+                    return 1
 
                 FollowButtom = []
-            # scroll
-
-            # im.save('endofthepost_image__before.jpg')
-
-            # im1 = ImageGrab.grab(self.bbox)
-            # im1.save('endofthepost_image__after.jpg')
 
     def scoroll(self):
         # returning 0 means that we need to go to the next post
@@ -159,45 +161,33 @@ class Following:
 
         time.sleep(0.4)
 
-        for i in range(15):
+        for _ in range(20):
 
             time.sleep(0.5)
             Following_image = locateOnScreen(
-                r'Main\Images\Validity_following\Following_buttom.png', region=self.FollowingBox, confidence=0.8)
-            Request_Butt = locateOnScreen(
-                r'Main\Images\Validity_following\requested_Buttom.png', region=self.FollowingBox, confidence=0.8)
-            length = len(Following_image)+len(Request_Butt)
+                r'Main\Images\Validity_following\Follow_buttom.png', region=self.FollowingBox, confidence=0.8)
 
-            if length > 4 and i < 5:
-                time.sleep(random.uniform(0.3, 0.6))
+            if len(Following_image) >= 3:
+                return 1
+            else:
                 self.im = ImageGrab.grab(self.bbox)
-                time.sleep(random.uniform(0.3, 0.6))
-                NowScroll = random.randint(-500, -300)
+                NowScroll = random.randint(-500, -400)
                 hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
-                time.sleep(random.uniform(0.8, 1.2))
+
                 if self.EndOfScroll() == 1:
+                    self.finished_following_post.append(copyurlUrl())
+
+                    with open('finished_following_post.json', 'w') as file:
+                        json.dump(self.finished_following_post, file)
+
                     return 0  # end of scroll
-
-            else:
-                return 1
-
-            if length > 4 and i >= 5:
-                time.sleep(random.uniform(0.3, 0.6))
-                self.im = ImageGrab.grab(self.bbox)
-                NowScroll = random.randint(-1500, -2000)
-                hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
-                if self.EndOfScroll() == 1:
-                    return 0
-            else:
-                return 1
 
         return 0
 
     def EndOfScroll(self):
-        time.sleep(random.uniform(0.3, 0.6))
-        EndOfScroll = locateOnScreen(self.im, confidence=0.9)
-        time.sleep(random.uniform(0.3, 0.6))
-        if EndOfScroll != None:
+        a2 = ImageGrab.grab((700, 350, 1200, 800))
+        diff = ImageChops.difference(self.im, a2)
+        if diff.getbbox() is None:
             print('End of scroll,lets go to the next post!')
             self.PostNum = self.PostNum+1
             return 1
@@ -293,13 +283,7 @@ class Following:
                     return 1
             else:
 
-                py.hotkey('alt', 'd')
-                # Wait for a short time to ensure the address bar is focused
-                time.sleep(0.5)
-                # Send Ctrl+C to copy the URL to clipboard
-                py.hotkey('ctrl', 'c')
                 postpage = copyurlUrl()
-
                 if 'instagram.com/p/' in postpage:
                     time.sleep(2)
                     ii = ii+1

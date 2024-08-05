@@ -114,7 +114,7 @@ if __name__ == "__main__":
             ChangeTheProcessBar('Following ...')
             page_opener.chose_post()
             page_opener.openfollowingpage()
-            Follow_p.Finding_follow_buttom()
+            status = Follow_p.Finding_follow_buttom()
             if Number_of_following >= Follow_p.Followed:
                 following_flag = 0
         else:
