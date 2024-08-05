@@ -1,3 +1,5 @@
+from PIL import ImageGrab, ImageChops
+from datetime import datetime
 from pyscreeze import ImageNotFoundException
 import lib_HumanMove as hu
 import pyautogui as py
@@ -77,7 +79,7 @@ class Following:
         # the box coordinates
         self.bbox = (700, 350, 1200, 800)
         # 0 means it is under process
-
+        self.im = None
         # 1 means it is over
         # 3 cannot open followers page
         # 4 end of post
@@ -102,10 +104,13 @@ class Following:
 
         check = self.CheckValidity()
         if check == 0:
+            print("cannot open following box")
             return
 
         hu.HumanLikeMove(510+random.randint(-10, 10),
                          400+random.randint(-20, 20),)
+        self.scoroll()
+
         while True:
             time.sleep(random.uniform(0.8, 1))
             FollowButtom = list(locateAllOnScreen(
@@ -132,31 +137,70 @@ class Following:
                         py.click()
                     time.sleep(random.uniform(0.3, 0.5))
                     py.moveRel(-150, 0, 0.6)
+
                 # ceheck the following is over or not
                 if self.Open_pages() == 1:
                     print("Done with following")
                     return
+
                 FollowButtom = []
-            time.sleep(1)
             # scroll
-            im = ImageGrab.grab(self.bbox)
+
             # im.save('endofthepost_image__before.jpg')
-            time.sleep(random.uniform(0.8, 1.2))
-            hu.HumanLikeMove(1000+random.randint(-10, 10),
-                             550+random.randint(-20, 20),)
-            time.sleep(random.uniform(0.8, 1.2))
-            NowScroll = random.randint(-500, -300)
-            hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
-            time.sleep(random.uniform(0.8, 1.2))
+
             # im1 = ImageGrab.grab(self.bbox)
             # im1.save('endofthepost_image__after.jpg')
-            EndOfScroll = locateOnScreen(im, confidence=0.9)
 
-            if EndOfScroll != None:
-                print('End of scroll,lets go to the next post!')
-                self.PostNum = self.PostNum+1
-                # im1.save('endofthepost_image__after.jpg')
-                return
+    def scoroll(self):
+        # returning 0 means that we need to go to the next post
+
+        hu.HumanLikeMove(1000+random.randint(-10, 10),
+                         550+random.randint(-20, 20),)
+
+        time.sleep(0.4)
+
+        for i in range(15):
+
+            time.sleep(0.5)
+            Following_image = locateOnScreen(
+                r'Main\Images\Validity_following\Following_buttom.png', region=self.FollowingBox, confidence=0.8)
+            Request_Butt = locateOnScreen(
+                r'Main\Images\Validity_following\requested_Buttom.png', region=self.FollowingBox, confidence=0.8)
+            length = len(Following_image)+len(Request_Butt)
+
+            if length > 4 and i < 5:
+                time.sleep(random.uniform(0.3, 0.6))
+                self.im = ImageGrab.grab(self.bbox)
+                time.sleep(random.uniform(0.3, 0.6))
+                NowScroll = random.randint(-500, -300)
+                hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
+                time.sleep(random.uniform(0.8, 1.2))
+                if self.EndOfScroll() == 1:
+                    return 0  # end of scroll
+
+            else:
+                return 1
+
+            if length > 4 and i >= 5:
+                time.sleep(random.uniform(0.3, 0.6))
+                self.im = ImageGrab.grab(self.bbox)
+                NowScroll = random.randint(-1500, -2000)
+                hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
+                if self.EndOfScroll() == 1:
+                    return 0
+            else:
+                return 1
+
+        return 0
+
+    def EndOfScroll(self):
+        time.sleep(random.uniform(0.3, 0.6))
+        EndOfScroll = locateOnScreen(self.im, confidence=0.9)
+        time.sleep(random.uniform(0.3, 0.6))
+        if EndOfScroll != None:
+            print('End of scroll,lets go to the next post!')
+            self.PostNum = self.PostNum+1
+            return 1
 
     def Open_pages(self):
         time.sleep(0.5)
@@ -226,15 +270,15 @@ class Following:
                         time.sleep(random.uniform(0.4, 0.8))
 
     def CheckValidity(self):
-        Flag = 0
-        Loop_count = 0
-        Situation = "okay"
-        time.sleep(random.uniform(0.7, 1))
-        Like_image = locateOnScreen(
-            r'Main\Images\Validity_following\FollowingPage_LIkeButtom.png', region=self.FollowingBox, confidence=0.8)
-        # start following
-        if Like_image:
-            while Flag != 1:
+        ii = 0
+        for i in range(3):
+
+            time.sleep(random.uniform(0.7, 1))
+            Like_image = locateOnScreen(
+                r'Main\Images\Validity_following\FollowingPage_LIkeButtom.png', region=self.FollowingBox, confidence=0.8)
+            # start following
+            if Like_image:
+
                 Following_image = locateOnScreen(
                     r'Main\Images\Validity_following\Following_buttom.png', region=self.FollowingBox, confidence=0.8)
                 Follow_Butt = locateOnScreen(
@@ -244,26 +288,66 @@ class Following:
 
                 if Following_image is None and Follow_Butt is None and Request_Butt is None:
                     print("Cannot see the page")
-                    time.sleep(3)
-                    Loop_count = Loop_count+1
-                    if Loop_count != 3:
-                        Flag = 1
-                        Situation = "CannotSeeTheButtoms"
-                        print("cannot see the buttoms")
                 else:
-                    Flag = 1
-                    print('done')
+                    print('can see following box')
                     return 1
-        else:
-            a = openpage.OpeningFollowingPage()
-            a.openfollowingpage()
-            print('Not done')
+            else:
+
+                py.hotkey('alt', 'd')
+                # Wait for a short time to ensure the address bar is focused
+                time.sleep(0.5)
+                # Send Ctrl+C to copy the URL to clipboard
+                py.hotkey('ctrl', 'c')
+                postpage = copyurlUrl()
+
+                if 'instagram.com/p/' in postpage:
+                    time.sleep(2)
+                    ii = ii+1
+                else:
+                    return 0
+
+                if ii == 1:
+                    py.press('f5')
+                    time.sleep(2)
+                    a = openpage.OpeningFollowingPage()
+                    a.openfollowingpage()
+        if i == 3:
+
+            screenshot = py.screenshot()
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = f"CannotOpenFollowingBox_{timestamp}.png"
+            screenshot.save(filename)
+            print("NotDone")
             return 0
 
 
-# time.sleep(1)
-# clear_terminal()
+time.sleep(1)
+clear_terminal()
 
 # folowp = Following(5)
 # # folowp.CheckValidity()
 # folowp.Finding_follow_buttom()
+
+
+def EndOfScroll(a1, i):
+    time.sleep(random.uniform(0.3, 0.6))
+    a2 = ImageGrab.grab((700, 350, 1200, 800))
+    # Save the screenshot to a file
+    a2.save(f'after{i}.png')
+    diff = ImageChops.difference(a1, a2)
+
+    if diff.getbbox() is None:
+        print('End of scroll,lets go to the next post!')
+        return 1
+
+
+for i in range(15):
+    time.sleep(random.uniform(0.8, 1.2))
+    a = ImageGrab.grab((700, 350, 1200, 800))
+    # Save the screenshot to a file
+    a.save(f'before{i}.png')
+
+    hu.Humanlikescroll(-500)  # 430 scroll kamele
+    if EndOfScroll(a, i) == 1:
+        a == None
+        print(i)   # end of scroll
