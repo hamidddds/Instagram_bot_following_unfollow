@@ -1,3 +1,4 @@
+from pyscreeze import ImageNotFoundException
 import lib_HumanMove as hu
 import pyautogui as py
 import random
@@ -9,6 +10,8 @@ import os
 import platform
 import pygetwindow as gw
 import winsound
+import platform
+import lib_OpenFollowinPage as openpage
 
 
 def locateOnScreen(image_path, region=None, confidence=0.7):
@@ -20,9 +23,9 @@ def locateOnScreen(image_path, region=None, confidence=0.7):
 
 def locateAllOnScreen(image_path, region=None, confidence=0.7):
     try:
-        return py.locateAllOnScreen(image_path, region=region, confidence=confidence)
-    except py.ImageNotFoundException:
-        return None
+        return list(py.locateAllOnScreen(image_path, region=region, confidence=confidence))
+    except ImageNotFoundException:
+        return []
 
 
 def clear_terminal():
@@ -68,6 +71,11 @@ class Following:
         self.Followed_temp = 0
         self.Followed = 0
         self.situation = 0
+        self.PostBox = (650, 130, 950, 700)
+        self.FollowingBox = (700, 350, 600, 450)
+        self.followingpage = (850, 127, 500, 200)
+        # the box coordinates
+        self.bbox = (700, 350, 1200, 800)
         # 0 means it is under process
 
         # 1 means it is over
@@ -91,66 +99,64 @@ class Following:
         print('Starting Following ...')
 
     def Finding_follow_buttom(self):
-        print("10")
+
+        check = self.CheckValidity()
+        if check == 0:
+            return
+
+        hu.HumanLikeMove(510+random.randint(-10, 10),
+                         400+random.randint(-20, 20),)
         while True:
             time.sleep(random.uniform(0.8, 1))
-            print("11")
             FollowButtom = list(locateAllOnScreen(
-                'images/FollowButtom.png', region=(700, 300, 500, 500), confidence=0.9))
-            print("12")
-            time.sleep(random.uniform(0.5, 0.9))
+                r'Main\Images\followbutton2.png', region=self.FollowingBox, confidence=0.9))
+            time.sleep(random.uniform(0.5, 0.6))
             # start following
 
             if len(FollowButtom) != None:
                 for pos in FollowButtom:
                     pos = py.center(pos)
-                    hu.HumanLikeMove(pos[0]+random.randint(-15, 15)-240,
-                                     pos[1]+random.randint(-8, 8))
-                    time.sleep(random.uniform(0.8, 1))
+                    py.moveTo(py.position()[
+                        0], pos[1] + random.randint(-8, 8)-5, duration=random.uniform(0.4, 0.5))
+                    # First, move to the x-axis position
+                    py.moveTo(pos[0] - 240 + random.randint(-15, 15),
+                              py.position()[1], duration=random.uniform(0.4, 0.5))
+
+                    # Then, move to the y-axis position
+
                     with py.hold('ctrl'):
                         py.click()
-                    time.sleep(random.uniform(0.5, 0.7))
+                    time.sleep(random.uniform(0.3, 0.5))
                     py.moveRel(0, -10, 0.3)
                     with py.hold('ctrl'):
                         py.click()
-                    time.sleep(random.uniform(0.8, 1))
+                    time.sleep(random.uniform(0.3, 0.5))
                     py.moveRel(-150, 0, 0.6)
-                    time.sleep(random.uniform(0.8, 1))
                 # ceheck the following is over or not
                 if self.Open_pages() == 1:
-                    print("222")
+                    print("Done with following")
                     return
-
-            time.sleep(2)
+                FollowButtom = []
+            time.sleep(1)
             # scroll
-            im = ImageGrab.grab(bbox=(765, 377, 1130, 755))
+            im = ImageGrab.grab(self.bbox)
             # im.save('endofthepost_image__before.jpg')
-
             time.sleep(random.uniform(0.8, 1.2))
-            print("1")
             hu.HumanLikeMove(1000+random.randint(-10, 10),
                              550+random.randint(-20, 20),)
-            print("2")
             time.sleep(random.uniform(0.8, 1.2))
-            print("3")
             NowScroll = random.randint(-500, -300)
-            print("4")
             hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
-            print("5")
             time.sleep(random.uniform(0.8, 1.2))
-            print("6")
-            im1 = ImageGrab.grab(bbox=(765, 377, 1130, 755))
-            print("7")
-            im1.save('endofthepost_image__after.jpg')
-            print("8")
+            # im1 = ImageGrab.grab(self.bbox)
+            # im1.save('endofthepost_image__after.jpg')
             EndOfScroll = locateOnScreen(im, confidence=0.9)
-            print("9")
 
             if EndOfScroll != None:
                 print('End of scroll,lets go to the next post!')
+                self.PostNum = self.PostNum+1
                 # im1.save('endofthepost_image__after.jpg')
-                self.situation = 4
-                return self.Followed, self.situation
+                return
 
     def Open_pages(self):
         time.sleep(0.5)
@@ -172,18 +178,14 @@ class Following:
         username = []
 
         while 1:
-            time.sleep(random.uniform(0.5, 0.7))
             Name_Of_page = copyurlUrl()
-            time.sleep(random.uniform(0.5, 0.7))
             print(Name_Of_page)
             #
             username = Name_Of_page.split("www.instagram.com/")[-1].rstrip('/')
-            # print(username)
-            # print(self.saved_following)
             if Homepage == Name_Of_page:
                 with open('my_list.json', 'w') as file:
                     json.dump(self.saved_following, file)
-                return
+                return 0
             else:
                 if username in self.saved_following:
                     time.sleep(random.uniform(0.4, 0.8))
@@ -192,7 +194,7 @@ class Following:
                     self.saved_following.append(username)
                     time.sleep(random.uniform(0.5, 0.7))
                     FollowButtom = locateOnScreen(
-                        'images/followbutton2.png', region=(650, 100, 800, 150), confidence=0.8)
+                        r'Main\Images\followbutton2.png', region=self.PostBox, confidence=0.8)
                     time.sleep(random.uniform(0.5, 0.9))
                     # start following
 
@@ -201,13 +203,11 @@ class Following:
                         hu.HumanLikeMove(FollowButtom[0]+random.randint(25, 35),
                                          FollowButtom[1]+random.randint(10, 15))
                         time.sleep(random.uniform(0.8, 1))
-                        py.click()
-                        # winsound.Beep(1000, 200)
+                        # py.click()
+                        winsound.Beep(1000, 200)
                         time.sleep(random.uniform(1, 1.4))
 
                         self.Followed += 1
-                        print(self.Followed)
-                        print(self.Following_Number)
 
                         if self.Followed >= self.Following_Number:
                             while True:
@@ -225,7 +225,45 @@ class Following:
                         py.hotkey('ctrl', 'w')
                         time.sleep(random.uniform(0.4, 0.8))
 
+    def CheckValidity(self):
+        Flag = 0
+        Loop_count = 0
+        Situation = "okay"
+        time.sleep(random.uniform(0.7, 1))
+        Like_image = locateOnScreen(
+            r'Main\Images\Validity_following\FollowingPage_LIkeButtom.png', region=self.FollowingBox, confidence=0.8)
+        # start following
+        if Like_image:
+            while Flag != 1:
+                Following_image = locateOnScreen(
+                    r'Main\Images\Validity_following\Following_buttom.png', region=self.FollowingBox, confidence=0.8)
+                Follow_Butt = locateOnScreen(
+                    r'Main\Images\Validity_following\Follow_buttom.png', region=self.FollowingBox, confidence=0.8)
+                Request_Butt = locateOnScreen(
+                    r'Main\Images\Validity_following\requested_Buttom.png', region=self.FollowingBox, confidence=0.8)
+
+                if Following_image is None and Follow_Butt is None and Request_Butt is None:
+                    print("Cannot see the page")
+                    time.sleep(3)
+                    Loop_count = Loop_count+1
+                    if Loop_count != 3:
+                        Flag = 1
+                        Situation = "CannotSeeTheButtoms"
+                        print("cannot see the buttoms")
+                else:
+                    Flag = 1
+                    print('done')
+                    return 1
+        else:
+            a = openpage.OpeningFollowingPage()
+            a.openfollowingpage()
+            print('Not done')
+            return 0
+
 
 # time.sleep(1)
 # clear_terminal()
+
 # folowp = Following(5)
+# # folowp.CheckValidity()
+# folowp.Finding_follow_buttom()

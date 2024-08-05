@@ -104,9 +104,9 @@ if __name__ == "__main__":
     # openpage()
 
     start_time = time.time()
+
     while True:
         start_time = time.time()
-        following_flag == 0
 
         if following_flag == 1:
             ChangeTheProcessBar('Openning the webpage ...')
@@ -115,8 +115,10 @@ if __name__ == "__main__":
             page_opener.chose_post()
             page_opener.openfollowingpage()
             Follow_p.Finding_follow_buttom()
-
-            following_flag = 0
-        while 1800-(time.time()-start_time) > 0:
-            hu.HumanLikeWDDDDait(20, 50, 50)
-            time.sleep(300)
+            if Number_of_following >= Follow_p.Followed:
+                following_flag = 0
+        else:
+            while 1800-(time.time()-start_time) > 0:
+                hu.HumanLikeWait(20, 500, 500)
+                time.sleep(60)
+                following_flag = 1

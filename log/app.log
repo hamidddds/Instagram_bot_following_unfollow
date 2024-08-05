@@ -31,3 +31,34 @@
 2024-07-30 00:26:43,790 - app_logger - ERROR - cannot see the following page page
 2024-07-30 00:42:15,347 - app_logger - ERROR - cannot see the following page page
 2024-07-30 00:46:20,890 - app_logger - ERROR - cannot see the following page page
+2024-08-02 14:43:41,400 - app_logger - INFO - Like buttom cannot be detected
+2024-08-02 14:43:41,619 - app_logger - ERROR - Following page is not detected
+2024-08-02 14:43:48,511 - app_logger - INFO - Like buttom cannot be detected
+2024-08-02 14:43:48,812 - app_logger - ERROR - Following page is not detected
+2024-08-02 14:44:00,468 - app_logger - ERROR - cannot see the following page page
+2024-08-02 15:07:05,114 - app_logger - INFO - Like buttom cannot be detected
+2024-08-02 15:07:05,318 - app_logger - ERROR - Following page is not detected
+2024-08-02 15:07:37,251 - app_logger - ERROR - cannot see the following page page
+2024-08-02 15:11:49,632 - app_logger - ERROR - cannot see the following page page
+2024-08-02 15:14:41,613 - app_logger - INFO - Like buttom cannot be detected
+2024-08-02 15:14:41,884 - app_logger - ERROR - Following page is not detected
+2024-08-02 15:15:11,547 - app_logger - INFO - Like buttom cannot be detected
+2024-08-02 15:15:11,837 - app_logger - ERROR - Following page is not detected
+2024-08-02 15:15:13,866 - app_logger - INFO - Like buttom cannot be detected
+2024-08-02 15:15:14,142 - app_logger - ERROR - Following page is not detected
+2024-08-02 15:24:29,498 - app_logger - INFO - Like buttom cannot be detected
+2024-08-02 15:24:29,763 - app_logger - ERROR - Following page is not detected
+2024-08-02 15:26:36,328 - app_logger - INFO - Like buttom cannot be detected
+2024-08-02 15:26:36,595 - app_logger - ERROR - Following page is not detected
+2024-08-02 15:30:13,580 - app_logger - INFO - Like buttom cannot be detected
+2024-08-02 15:30:13,839 - app_logger - ERROR - Following page is not detected
+2024-08-02 15:34:34,236 - app_logger - INFO - Like buttom cannot be detected
+2024-08-02 15:34:34,487 - app_logger - ERROR - Following page is not detected
+2024-08-02 21:20:40,953 - app_logger - INFO - Like buttom cannot be detected
+2024-08-02 21:20:41,257 - app_logger - ERROR - Following page is not detected
+2024-08-02 21:20:43,019 - app_logger - INFO - Like buttom cannot be detected
+2024-08-02 21:20:43,270 - app_logger - ERROR - Following page is not detected
+2024-08-02 21:25:27,223 - app_logger - INFO - comment buttom cannot be detected
+2024-08-02 21:25:27,443 - app_logger - INFO - Forward buttom cannot be detected
+2024-08-02 21:34:15,364 - app_logger - INFO - comment buttom cannot be detected
+2024-08-02 21:34:15,580 - app_logger - INFO - Forward buttom cannot be detected

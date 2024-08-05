@@ -32,9 +32,9 @@ def HumanLikeMove(movex, movey):
     elif 150 < distance <= 300:
         MoveF(movex, movey, random.uniform(1.3, 1.6))
     elif 300 < distance <= 700:
-        MoveF(movex, movey, random.uniform(1.6, 2.1))
+        MoveF(movex, movey, random.uniform(1.6, 1.8))
     else:
-        MoveF(movex, movey, random.uniform(2.5, 3))
+        MoveF(movex, movey, random.uniform(1.8, 2))
 
 
 def HumanLikeClick():
@@ -53,6 +53,7 @@ def Humanlikescroll(x):
     x2 = x % RN
     py.scroll(x2)
     for _ in range(RN):
+        py.click()
         time.sleep(random.uniform(0.7, 1.2))
         py.scroll(x1)
 

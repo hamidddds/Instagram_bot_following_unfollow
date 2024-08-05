@@ -39,6 +39,7 @@ class OpeningFollowingPage:
         self.Followed_temp = 0
         self.Followed = 0
         self.situation = 0
+        self.likecommentfowrward = (1150, 580, 400, 200)
         # 0 means unsucess
         # 1 means it is sucess
         self.PostNum = 1  # 0 means it doesnt need to change the post
@@ -51,27 +52,27 @@ class OpeningFollowingPage:
         pass
         # self.chose_post()
 
-    def chose_post(self):
+    def chose_post(self, post_num=None):
+
+        if post_num is None:
+            post_num = self.PostNum
+
         hu.HumanLikeMove(800, 782)
         hu.HumanLikeClick()
         time.sleep(1)
         if self.PostNum != 1:
-            time.sleep(random.uniform(0.5, 0.8))
-            for i in range(1, self.PostNum-1):
+            for _ in range(1, self.PostNum-1):
+                time.sleep(random.uniform(0.5, 0.8))
                 py.press('Right')
-                self.PostNum = 0
+        time.sleep(random.uniform(0.5, 0.8))
+        py.press('f5')
+        time.sleep(1)
 
     def openfollowingpage(self):
         Locations = []
-
-        image_filenames = ['images/like_button.png',
-                           'images/red_like_button.png',
-                           'images/forward.png',
-                           'images/Comment_button.png',
-                           ]
-
-        Others = locate_center_on_screen('images/others.png',
-                                         region=(1000, 800, 600, 200), confidence=0.7)
+        time.sleep(0.8)
+        Others = locate_center_on_screen(r'Main\Images\others.png',
+                                         self.likecommentfowrward, confidence=0.7)
 
         if (Others != None):
             hu.HumanLikeMove(Others[0], Others[1])
@@ -89,11 +90,11 @@ class OpeningFollowingPage:
                 return
 
         else:
-            like_bottom_location = locate_center_on_screen('Main\Images\like_button.png', region=(
-                700, 800, 600, 400), confidence=0.8)
+            like_bottom_location = locate_center_on_screen(
+                r'Main\Images\like_button.png', region=self.likecommentfowrward, confidence=0.8)
             if like_bottom_location == None:
-                like_bottom_location = locate_center_on_screen('Main\images/red_like_button.png', region=(
-                    700, 800, 600, 400), confidence=0.9)
+                like_bottom_location = locate_center_on_screen(
+                    r'Main\Images\red_like_button.png', region=self.likecommentfowrward, confidence=0.9)
 
             if like_bottom_location != None:
                 Locations.append((like_bottom_location[0],
@@ -105,8 +106,8 @@ class OpeningFollowingPage:
                 filename = f"Like_buttom_is_not_detected_{timestamp}.png"
                 screenshot.save(filename)
 
-            comment_bottom_location = locate_center_on_screen('Main\images/Comment_button.png', region=(
-                700, 800, 600, 400), confidence=0.8)
+            comment_bottom_location = locate_center_on_screen(
+                r'Main\Images\Comment_button.png', region=self.likecommentfowrward, confidence=0.8)
 
             if comment_bottom_location != None:
                 Locations.append((comment_bottom_location[0],
@@ -117,8 +118,8 @@ class OpeningFollowingPage:
                 filename = f"comment_buttom_is_not_detected_{timestamp}.png"
                 screenshot.save(filename)
 
-            forward_bottom_location = locate_center_on_screen('Main\images/forward.png', region=(
-                700, 800, 600, 400), confidence=0.8)
+            forward_bottom_location = locate_center_on_screen(
+                r'Main\Images\forward.png', region=self.likecommentfowrward, confidence=0.8)
 
             if forward_bottom_location != None:
                 Locations.append((forward_bottom_location[0],
@@ -143,7 +144,7 @@ class OpeningFollowingPage:
                         int(location_coordinate[0]), int(
                             location_coordinate[1]))
                     time.sleep(0.4)
-                    py.moveRel(0, 40, 0.5)
+                    py.moveRel(0, 35, 0.5)
                     time.sleep(0.35)
                     py.click()
                     time.sleep(2)
