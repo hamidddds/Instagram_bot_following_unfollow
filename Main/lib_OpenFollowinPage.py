@@ -1,4 +1,4 @@
-from Lib_Finding_image_on_screen import FindImages
+from Lib_Finding_image_on_screen import find_images
 import random
 import os
 import pyautogui
@@ -89,7 +89,8 @@ class OpeningFollowingPage:
     def openfollowingpage(self):
         Locations = []
 
-        Others = FindImages(r'Images\others.png')
+        Others = find_images(r'Images\others.png',
+                             region_coefficients=[1, 1/2, "right", ""])
 
         if (Others != None):
             hu.HumanLikeMove(Others[0][0], Others[0][1])
@@ -107,12 +108,19 @@ class OpeningFollowingPage:
                 return
 
         else:
-            like_bottom_location = FindImages(
-                r'Images\like_button.png')
+            likes_buttom = find_images(r'Images\likes.png',
+                                       region_coefficients=[1, 1/2, "right", ""])
+            if likes_buttom != None:
+                Locations.append((likes_buttom[0][0],
+                                  likes_buttom[0][1]))
+
+            like_bottom_location = find_images(
+                r'Images\like_button.png',
+                region_coefficients=[1, 1/2, "right", ""])
 
             if like_bottom_location != None:
-                Locations.append((like_bottom_location[1][0],
-                                  like_bottom_location[1][1]))
+                Locations.append((like_bottom_location[0][0],
+                                  like_bottom_location[0][1]))
             else:
                 app_logger.info('Like buttom cannot be detected')
                 screenshot = pyautogui.screenshot()
@@ -120,8 +128,9 @@ class OpeningFollowingPage:
                 filename = f"Like_buttom_is_not_detected_{timestamp}.png"
                 screenshot.save(filename)
 
-            comment_bottom_location = FindImages(
-                r'Images\Comment_button.png')
+            comment_bottom_location = find_images(
+                r'Images\Comment_button.png',
+                region_coefficients=[1, 1/2, "right", ""])
             print(comment_bottom_location)
 
             if comment_bottom_location != None:
@@ -133,8 +142,9 @@ class OpeningFollowingPage:
                 filename = f"comment_buttom_is_not_detected_{timestamp}.png"
                 screenshot.save(filename)
 
-            forward_bottom_location = FindImages(
-                r'Images\forward.png')
+            forward_bottom_location = find_images(
+                r'Images\forward.png',
+                region_coefficients=[1, 1/2, "right", ""])
 
             if forward_bottom_location != None:
                 print(forward_bottom_location)
@@ -177,12 +187,12 @@ class OpeningFollowingPage:
             return
 
     def validity(self):
-        V = FindImages('images/followingValidity.png')
+        V = find_images('images/followingValidity.png')
         if V != None:
             pass
         else:
             return 0
 
 
-# page_opener = OpeningFollowingPage()
-# page_opener.openfollowingpage()
+page_opener = OpeningFollowingPage()
+page_opener.openfollowingpage()

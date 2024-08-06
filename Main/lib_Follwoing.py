@@ -164,8 +164,6 @@ class Following:
         for _ in range(20):
 
             time.sleep(0.5)
-            # Following_image = locateAllOnScreen(
-            #     r'Images\Validity_following\Follow_buttom.png', region=self.FollowingBox, confidence=0.8)
             Following_image = FindImages(
                 r'Images\Validity_following\Follow_buttom.png')
             if Following_image == None:
