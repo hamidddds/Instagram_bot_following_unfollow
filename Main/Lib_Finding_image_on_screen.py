@@ -48,7 +48,7 @@ def get_chrome_region():
         raise Exception("No visible Chrome window found")
 
 
-def FindImages(path, region=None, screenshot_filename='screenshot.png'):
+def FindImages(path, region=None):
     if region is None:
         region = get_chrome_region()
 
@@ -56,7 +56,10 @@ def FindImages(path, region=None, screenshot_filename='screenshot.png'):
         path, region, threshold=0.8)
 
     # Save the screenshot
-    cv2.imwrite(screenshot_filename, screenshot_np)
+    # cv2.imwrite(screenshot_filename, screenshot_np)
+
+    # List to hold the positions
+    positions = []
 
     # Move the mouse to each found button and wait 1 second
     if len(FollowButtons) > 0:
@@ -64,14 +67,17 @@ def FindImages(path, region=None, screenshot_filename='screenshot.png'):
             # Adjust the coordinates to the actual screen
             screen_x = region[0] + rect[0] + rect[2] // 2
             screen_y = region[1] + rect[1] + rect[3] // 2
-            pyautogui.moveTo(screen_x, screen_y)
-            time.sleep(1)
-            print(f"Mouse moved to follow button at: {rect}")
+            positions.append((screen_x, screen_y))
+            # pyautogui.moveTo(screen_x, screen_y)
+            # time.sleep(1)
+            # print(f"Mouse moved to follow button at: {rect}")
     else:
-        print("No follow buttons found.")
+        return None
 
-    print(f"Screenshot saved as {screenshot_filename}")
+    # print(f"Screenshot saved as {screenshot_filename}")
 
+    return positions  # Return the list of positions
 
-# Example of how to call this main function from another file:
-# main('path_to_image.png')
+# Example of how to call this function:
+# positions = FindImages('path_to_image.png')
+# print("Positions of found buttons:", positions)

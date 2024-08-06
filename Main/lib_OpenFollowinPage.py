@@ -1,3 +1,4 @@
+from Lib_Finding_image_on_screen import FindImages
 import random
 import os
 import pyautogui
@@ -82,8 +83,7 @@ class OpeningFollowingPage:
     def openfollowingpage(self):
         Locations = []
         time.sleep(0.8)
-        Others = locate_center_on_screen(r'Main\Images\others.png',
-                                         self.likecommentfowrward, confidence=0.7)
+        Others = FindImages(r'Images\others.png')
 
         if (Others != None):
             hu.HumanLikeMove(Others[0], Others[1])
@@ -101,11 +101,8 @@ class OpeningFollowingPage:
                 return
 
         else:
-            like_bottom_location = locate_center_on_screen(
-                r'Main\Images\like_button.png', region=self.likecommentfowrward, confidence=0.8)
-            if like_bottom_location == None:
-                like_bottom_location = locate_center_on_screen(
-                    r'Main\Images\red_like_button.png', region=self.likecommentfowrward, confidence=0.9)
+            like_bottom_location = FindImages(
+                r'Images\like_button.png')
 
             if like_bottom_location != None:
                 Locations.append((like_bottom_location[0],
@@ -117,8 +114,8 @@ class OpeningFollowingPage:
                 filename = f"Like_buttom_is_not_detected_{timestamp}.png"
                 screenshot.save(filename)
 
-            comment_bottom_location = locate_center_on_screen(
-                r'Main\Images\Comment_button.png', region=self.likecommentfowrward, confidence=0.8)
+            comment_bottom_location = FindImages(
+                r'Images\Comment_button.png')
 
             if comment_bottom_location != None:
                 Locations.append((comment_bottom_location[0],
@@ -129,8 +126,8 @@ class OpeningFollowingPage:
                 filename = f"comment_buttom_is_not_detected_{timestamp}.png"
                 screenshot.save(filename)
 
-            forward_bottom_location = locate_center_on_screen(
-                r'Main\Images\forward.png', region=self.likecommentfowrward, confidence=0.8)
+            forward_bottom_location = FindImages(
+                r'Images\forward.png')
 
             if forward_bottom_location != None:
                 Locations.append((forward_bottom_location[0],
@@ -171,8 +168,7 @@ class OpeningFollowingPage:
             return
 
     def validity(self):
-        V = locateOnScreen('images/followingValidity.png', region=(
-            500, 300, 800, 300), confidence=0.8)
+        V = FindImages('images/followingValidity.png')
         if V != None:
             pass
         else:

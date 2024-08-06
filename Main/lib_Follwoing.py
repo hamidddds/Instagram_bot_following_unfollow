@@ -16,18 +16,18 @@ import lib_OpenFollowinPage as openpage
 from Lib_Finding_image_on_screen import FindImages
 
 
-def locateOnScreen(image_path, region=None, confidence=0.7):
-    try:
-        return py.locateOnScreen(image_path, region=region, confidence=confidence)
-    except py.ImageNotFoundException:
-        return None
+# def locateOnScreen(image_path, region=None, confidence=0.7):
+#     try:
+#         return py.locateOnScreen(image_path, region=region, confidence=confidence)
+#     except py.ImageNotFoundException:
+#         return None
 
 
-def locateAllOnScreen(image_path, region=None, confidence=0.7):
-    try:
-        return list(py.locateAllOnScreen(image_path, region=region, confidence=confidence))
-    except ImageNotFoundException:
-        return []
+# def locateAllOnScreen(image_path, region=None, confidence=0.7):
+#     try:
+#         return list(py.locateAllOnScreen(image_path, region=region, confidence=confidence))
+#     except ImageNotFoundException:
+#         return []
 
 
 def clear_terminal():
@@ -120,14 +120,15 @@ class Following:
                 self.PostNum = self.PostNum+1
                 return 0, self.PostNum
             time.sleep(random.uniform(0.8, 1))
-            FollowButtom = list(locateAllOnScreen(
-                r'Main\Images\followbutton2.png', region=self.FollowingBox, confidence=0.9))
+            FollowButtom = FindImages(
+                r'Images\followbutton2.png')
+            # FollowButtom = list(locateAllOnScreen(
+            #     r'Images\followbutton2.png', region=self.FollowingBox, confidence=0.9))
             time.sleep(random.uniform(0.5, 0.6))
             # start following
 
             if len(FollowButtom) != None:
                 for pos in FollowButtom:
-                    pos = py.center(pos)
                     py.moveTo(py.position()[
                         0], pos[1] + random.randint(-8, 8)-5, duration=random.uniform(0.4, 0.5))
                     # First, move to the x-axis position
@@ -163,13 +164,11 @@ class Following:
         for _ in range(20):
 
             time.sleep(0.5)
-
-            Following_image = locateAllOnScreen(
-                r'Main\Images\Validity_following\Follow_buttom.png', region=self.FollowingBox, confidence=0.8)
-
-            if len(Following_image) >= 3:
-                return 1
-            else:
+            # Following_image = locateAllOnScreen(
+            #     r'Images\Validity_following\Follow_buttom.png', region=self.FollowingBox, confidence=0.8)
+            Following_image = FindImages(
+                r'Images\Validity_following\Follow_buttom.png')
+            if Following_image == None:
                 self.im = ImageGrab.grab(self.bbox)
                 NowScroll = random.randint(-500, -400)
                 hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
@@ -181,6 +180,9 @@ class Following:
                         json.dump(self.finished_following_post, file)
 
                     return 0  # end of scroll
+            else:
+                if len(Following_image) >= 3:
+                    return 1
 
         return 0
 
@@ -227,8 +229,8 @@ class Following:
                 else:
                     self.saved_following.append(username)
                     time.sleep(random.uniform(0.5, 0.7))
-                    FollowButtom = locateOnScreen(
-                        r'Main\Images\followbutton2.png', region=self.PostBox, confidence=0.8)
+                    FollowButtom = FindImages(
+                        r'Images\followbutton2.png')
                     time.sleep(random.uniform(0.5, 0.9))
                     # start following
 
@@ -264,17 +266,17 @@ class Following:
         for i in range(3):
 
             time.sleep(random.uniform(0.7, 1))
-            Like_image = locateOnScreen(
-                r'Main\Images\Validity_following\FollowingPage_LIkeButtom.png', region=self.FollowingBox, confidence=0.8)
+            Like_image = FindImages(
+                r'Images\Validity_following\FollowingPage_LIkeButtom.png')
             # start following
             if Like_image:
 
-                Following_image = locateOnScreen(
-                    r'Main\Images\Validity_following\Following_buttom.png', region=self.FollowingBox, confidence=0.8)
-                Follow_Butt = locateOnScreen(
-                    r'Main\Images\Validity_following\Follow_buttom.png', region=self.FollowingBox, confidence=0.8)
-                Request_Butt = locateOnScreen(
-                    r'Main\Images\Validity_following\requested_Buttom.png', region=self.FollowingBox, confidence=0.8)
+                Following_image = FindImages(
+                    r'Images\Validity_following\Following_buttom.png')
+                Follow_Butt = FindImages(
+                    r'Images\Validity_following\Follow_buttom.png')
+                Request_Butt = FindImages(
+                    r'Images\Validity_following\requested_Buttom.png')
 
                 if Following_image is None and Follow_Butt is None and Request_Butt is None:
                     print("Cannot see the page")
@@ -305,8 +307,8 @@ class Following:
             return 0
 
 
-time.sleep(1)
-clear_terminal()
+# time.sleep(1)
+# clear_terminal()
 
 # folowp = Following(5)
 # # folowp.CheckValidity()

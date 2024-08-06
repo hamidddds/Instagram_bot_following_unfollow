@@ -10,3 +10,5 @@
 2024-08-02 14:34:33,156 - app_logger - INFO - Like buttom cannot be detected
 2024-08-02 14:34:33,384 - app_logger - ERROR - Following page is not detected
 2024-08-02 14:34:47,099 - app_logger - ERROR - cannot see the following page page
+2024-08-06 00:26:12,041 - app_logger - INFO - comment buttom cannot be detected
+2024-08-06 00:26:12,286 - app_logger - INFO - Forward buttom cannot be detected
