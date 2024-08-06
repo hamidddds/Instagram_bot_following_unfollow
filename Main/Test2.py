@@ -1,34 +1,36 @@
-import pychrome
-import time
-import winsound
+import pyautogui
+from PIL import Image, ImageDraw
+import pygetwindow as gw
 
-# Connect to the Chrome browser (Make sure Chrome is started with remote debugging)
-chrome = pychrome.Browser(url="http://127.0.0.1:9222")
+# Get the Chrome window by its title
+chrome_window = None
+for window in gw.getWindowsWithTitle('Google Chrome'):
+    chrome_window = window
+    break
 
-# Create a tab
-tab = chrome.new_tab()
+if chrome_window is None:
+    print("Chrome window not found!")
+else:
+    # Capture the full screen
+    screenshot = pyautogui.screenshot()
 
-# Define a callback for page load events
+    # Get the position and size of the Chrome window
+    region = (chrome_window.left, chrome_window.top,
+              chrome_window.width, chrome_window.height)
 
+    # Create a black image of the same size as the screenshot
+    black_mask = Image.new("RGB", screenshot.size, (0, 0, 0))
 
-def page_loaded():
-    print("Page is fully loaded.")
-    winsound.Beep(1000, 500)  # Frequency of 1000 Hz and duration of 500 ms
-    tab.stop()  # Stop listening to further events
+    # Create a mask for the region to keep (Chrome window area)
+    mask = Image.new("L", screenshot.size, 0)
+    draw = ImageDraw.Draw(mask)
+    draw.rectangle(region, fill=255)
 
+    # Composite the screenshot with the black mask using the region mask
+    result = Image.composite(screenshot, black_mask, mask)
 
-# Start listening to the page load event
-tab.Page.loadEventFired = page_loaded
+    # Save the resulting image
+    result.save("chrome_screenshot_masked.png")
 
-# Start the tab
-tab.start()
-
-# Navigate to the desired webpage
-tab.Page.navigate(url="https://example.com")
-
-# Wait for the event
-tab.wait(10)
-
-# Stop the tab and close it
-tab.stop()
-chrome.close_tab(tab)
+    # Alternatively, show the resulting image (for visual confirmation)
+    result.show()

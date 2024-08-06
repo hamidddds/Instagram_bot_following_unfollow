@@ -58,7 +58,7 @@ def EnterUrl(Nameurl):
     hu.HumanLikeKeyboard(Nameurl)
     time.sleep(random.uniform(0.5, 0.8))
     py.press('enter')
-    time.sleep(8)
+    time.sleep(3)
 
 
 def ProcessBar():
@@ -121,7 +121,7 @@ if __name__ == "__main__":
             if Number_of_following >= Follow_p.Followed:
                 following_flag = 0
         else:
-            while 600-(time.time()-start_time) > 0:
+            while 1500-(time.time()-start_time) > 0:
                 hu.HumanLikeWait(20, 500, 500)
                 time.sleep(60)
                 following_flag = 1

@@ -8,30 +8,36 @@ import lib_HumanMove as hu
 import pyautogui as py
 import time
 from PIL import ImageGrab  # Required for screen capture
-import datetime
 import Logger
 from datetime import datetime
 import json
-from lib_Follwoing import copyurlUrl
+import pyperclip
 
 
-def locate_center_on_screen(image_path, region=None, confidence=0.7):
-    try:
-        return py.locateCenterOnScreen(image_path, region=region, confidence=confidence)
-    except py.ImageNotFoundException:
-        return None
+def copyurlUrl():  # new
+    # Find the active Chrome window
+    chrome_window = gw.getWindowsWithTitle('Google Chrome')[0]
 
+    # Bring Chrome window to the front
+    chrome_window.activate()
+    time.sleep(0.5)
+    # Send Alt+D to focus the address bar
+    py.hotkey('alt', 'd')
 
-def locateOnScreen(image_path, region=None, confidence=0.7):
-    try:
-        return py.locateOnScreen(image_path, region=region, confidence=confidence)
-    except py.ImageNotFoundException:
-        return None
+    # Wait for a short time to ensure the address bar is focused
+    time.sleep(0.5)
+
+    # Send Ctrl+C to copy the URL to clipboard
+    py.hotkey('ctrl', 'c')
+
+    url = pyperclip.paste()
+
+    return url
 
 
 def generate_filename_with_timestamp():
     # Get the current date and time
-    now = datetime.datetime.now()
+    now = datetime.now()
     # Format the date and time
     timestamp = now.strftime("%Y%m%d_%H%M")
     # Construct the filename
@@ -82,11 +88,11 @@ class OpeningFollowingPage:
 
     def openfollowingpage(self):
         Locations = []
-        time.sleep(0.8)
+
         Others = FindImages(r'Images\others.png')
 
         if (Others != None):
-            hu.HumanLikeMove(Others[0], Others[1])
+            hu.HumanLikeMove(Others[0][0], Others[0][1])
             py.click()
             time.sleep(1)
             if self.validity() == 0:
@@ -105,8 +111,8 @@ class OpeningFollowingPage:
                 r'Images\like_button.png')
 
             if like_bottom_location != None:
-                Locations.append((like_bottom_location[0],
-                                  like_bottom_location[1]))
+                Locations.append((like_bottom_location[1][0],
+                                  like_bottom_location[1][1]))
             else:
                 app_logger.info('Like buttom cannot be detected')
                 screenshot = pyautogui.screenshot()
@@ -116,10 +122,11 @@ class OpeningFollowingPage:
 
             comment_bottom_location = FindImages(
                 r'Images\Comment_button.png')
+            print(comment_bottom_location)
 
             if comment_bottom_location != None:
-                Locations.append((comment_bottom_location[0],
-                                  comment_bottom_location[1]))
+                Locations.append((comment_bottom_location[0][0],
+                                  comment_bottom_location[0][1]))
                 app_logger.info('comment buttom cannot be detected')
                 screenshot = pyautogui.screenshot()
                 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -130,9 +137,11 @@ class OpeningFollowingPage:
                 r'Images\forward.png')
 
             if forward_bottom_location != None:
-                Locations.append((forward_bottom_location[0],
-                                  forward_bottom_location[1]))
-                app_logger.info('Forward buttom cannot be detected')
+                print(forward_bottom_location)
+                Locations.append((forward_bottom_location[0][0],
+                                  forward_bottom_location[0][1]))
+
+                # app_logger.info('Forward buttom cannot be detected')
                 screenshot = pyautogui.screenshot()
                 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
                 filename = f"Forward_buttom_is_not_detected_{timestamp}.png"
@@ -173,3 +182,7 @@ class OpeningFollowingPage:
             pass
         else:
             return 0
+
+
+# page_opener = OpeningFollowingPage()
+# page_opener.openfollowingpage()
