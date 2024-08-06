@@ -83,8 +83,9 @@ if __name__ == "__main__":
     clear_terminal()
     ProcessBar()
     TargetName = "partoo333"
-    Number_of_following = 10
+    Number_of_following = 5
     following_flag = 1
+    postnum = 1
     page_opener = openpage.OpeningFollowingPage()
     Follow_p = Following.Following(Number_of_following)
 
@@ -112,13 +113,15 @@ if __name__ == "__main__":
             ChangeTheProcessBar('Openning the webpage ...')
             EnterUrl("www.instagram.com/"+TargetName)
             ChangeTheProcessBar('Following ...')
-            page_opener.chose_post()
+            page_opener.chose_post(postnum)
             page_opener.openfollowingpage()
-            status = Follow_p.Finding_follow_buttom()
+            result = Follow_p.Finding_follow_buttom()
+            if isinstance(result, tuple):
+                _, postnum = result
             if Number_of_following >= Follow_p.Followed:
                 following_flag = 0
         else:
-            while 1800-(time.time()-start_time) > 0:
+            while 600-(time.time()-start_time) > 0:
                 hu.HumanLikeWait(20, 500, 500)
                 time.sleep(60)
                 following_flag = 1

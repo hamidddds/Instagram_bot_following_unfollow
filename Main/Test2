@@ -1,0 +1,9 @@
+from Lib_Finding_image_on_screen import FindImages
+import cv2
+import numpy as np
+import pyautogui
+import pygetwindow as gw
+import time
+a = r'C:\Users\hamid\Desktop\Instagram Code\InstagramCode\Images\ReadHeartCommentForwards.png'
+
+FindImages(a)

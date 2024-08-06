@@ -1,7 +1,8 @@
+import random
+import os
 import pyautogui
 from PIL import Image
 from Logger import app_logger
-from random import random
 import lib_HumanMove as hu
 import pyautogui as py
 import time
@@ -9,6 +10,8 @@ from PIL import ImageGrab  # Required for screen capture
 import datetime
 import Logger
 from datetime import datetime
+import json
+from lib_Follwoing import copyurlUrl
 
 
 def locate_center_on_screen(image_path, region=None, confidence=0.7):
@@ -50,9 +53,12 @@ class OpeningFollowingPage:
 
     def initialize(self):
         pass
-        # self.chose_post()
 
+        # self.chose_post()
     def chose_post(self, post_num=None):
+        if os.path.exists('Finish_following_posts.json'):
+            with open('Finish_following_posts.json', 'r') as file:
+                finished_following_post = json.load(file)
 
         if post_num is None:
             post_num = self.PostNum
@@ -60,13 +66,18 @@ class OpeningFollowingPage:
         hu.HumanLikeMove(800, 782)
         hu.HumanLikeClick()
         time.sleep(1)
+
         if self.PostNum != 1:
             for _ in range(1, self.PostNum-1):
-                time.sleep(random.uniform(0.5, 0.8))
-                py.press('Right')
+                while True:
+                    url = copyurlUrl()
+                    if url is not finished_following_post:
+                        py.press('Right')
+                        time.sleep(random.uniform(0.5, 0.8))
+
         time.sleep(random.uniform(0.5, 0.8))
         py.press('f5')
-        time.sleep(1)
+        time.sleep(2)
 
     def openfollowingpage(self):
         Locations = []

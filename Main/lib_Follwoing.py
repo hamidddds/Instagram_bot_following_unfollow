@@ -12,8 +12,8 @@ import os
 import platform
 import pygetwindow as gw
 import winsound
-import platform
 import lib_OpenFollowinPage as openpage
+from Lib_Finding_image_on_screen import FindImages
 
 
 def locateOnScreen(image_path, region=None, confidence=0.7):
@@ -85,7 +85,6 @@ class Following:
         # 4 end of post
         # 10 means it is ended
         self.PostNum = 1  # 0 means it doesnt need to change the post
-        self.EndOfScroll = None
         self.Following_Number = RemainedFollowed
         # self.saved_following = []
 
@@ -97,7 +96,7 @@ class Following:
                 self.saved_following = json.load(file)
         else:
             self.saved_following = []
-        if os.path.exists('my_list.json'):
+        if os.path.exists('Finish_following_posts.json'):
             with open('Finish_following_posts.json', 'r') as file:
                 self.finished_following_post = json.load(file)
         else:
@@ -112,14 +111,14 @@ class Following:
             print("cannot open following box")
             return 0
 
-        hu.HumanLikeMove(510+random.randint(-10, 10),
-                         400+random.randint(-20, 20),)
-        a = self.scoroll()
-        if 1 == 0:  # end of the scroll
-            self.PostNum = self.PostNum+1
-            return 0
-
         while True:
+            a = self.scoroll()
+
+            hu.HumanLikeMove(510+random.randint(-10, 10),
+                             400+random.randint(-20, 20),)
+            if a == 0:  # end of the scroll
+                self.PostNum = self.PostNum+1
+                return 0, self.PostNum
             time.sleep(random.uniform(0.8, 1))
             FollowButtom = list(locateAllOnScreen(
                 r'Main\Images\followbutton2.png', region=self.FollowingBox, confidence=0.9))
@@ -164,7 +163,8 @@ class Following:
         for _ in range(20):
 
             time.sleep(0.5)
-            Following_image = locateOnScreen(
+
+            Following_image = locateAllOnScreen(
                 r'Main\Images\Validity_following\Follow_buttom.png', region=self.FollowingBox, confidence=0.8)
 
             if len(Following_image) >= 3:
@@ -237,8 +237,8 @@ class Following:
                         hu.HumanLikeMove(FollowButtom[0]+random.randint(25, 35),
                                          FollowButtom[1]+random.randint(10, 15))
                         time.sleep(random.uniform(0.8, 1))
-                        # py.click()
-                        winsound.Beep(1000, 200)
+                        py.click()
+                        # winsound.Beep(1000, 200)
                         time.sleep(random.uniform(1, 1.4))
 
                         self.Followed += 1
@@ -311,27 +311,3 @@ clear_terminal()
 # folowp = Following(5)
 # # folowp.CheckValidity()
 # folowp.Finding_follow_buttom()
-
-
-def EndOfScroll(a1, i):
-    time.sleep(random.uniform(0.3, 0.6))
-    a2 = ImageGrab.grab((700, 350, 1200, 800))
-    # Save the screenshot to a file
-    a2.save(f'after{i}.png')
-    diff = ImageChops.difference(a1, a2)
-
-    if diff.getbbox() is None:
-        print('End of scroll,lets go to the next post!')
-        return 1
-
-
-for i in range(15):
-    time.sleep(random.uniform(0.8, 1.2))
-    a = ImageGrab.grab((700, 350, 1200, 800))
-    # Save the screenshot to a file
-    a.save(f'before{i}.png')
-
-    hu.Humanlikescroll(-500)  # 430 scroll kamele
-    if EndOfScroll(a, i) == 1:
-        a == None
-        print(i)   # end of scroll
