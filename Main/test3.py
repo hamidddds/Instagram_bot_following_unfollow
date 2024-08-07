@@ -27,7 +27,7 @@ def add_shake_to_path(path, max_deviation=5):
     return path + noise
 
 
-def calculate_duration(start_point, end_point, min_duration=0.5, max_duration=3):
+def calculate_duration(start_point, end_point, min_duration=1, max_duration=10):
     """
     Calculate duration based on the distance between start and end points.
     """
@@ -38,7 +38,8 @@ def calculate_duration(start_point, end_point, min_duration=0.5, max_duration=3)
     return duration
 
 
-def move_mouse_human_like(start_point, end_point, steps, max_shake_deviation=5):
+def move_mouse_human_like(start_point, end_point, steps=1000, max_shake_deviation=1.2):
+
     # Calculate the duration based on distance
     duration = calculate_duration(start_point, end_point)
 
@@ -68,7 +69,7 @@ def move_mouse_human_like(start_point, end_point, steps, max_shake_deviation=5):
     segment2 = 2 * steps // 3
 
     # Speed adjustment factors for each segment
-    intervals = [0.5, 1.0, 1.5]
+    intervals = [0.5, 0.8, 1.5]
 
     # Calculate base intervals
     base_intervals = [duration / (9 * segment1), duration / (
@@ -90,6 +91,6 @@ def move_mouse_human_like(start_point, end_point, steps, max_shake_deviation=5):
 
 # Example usage:
 start = (0, 0)
-end = (100, 100)
+end = (1000, 1000)
 # Adjust the number of steps and shake deviation
-move_mouse_human_like(start, end, steps=1000, max_shake_deviation=1.2)
+move_mouse_human_like(start, end)
