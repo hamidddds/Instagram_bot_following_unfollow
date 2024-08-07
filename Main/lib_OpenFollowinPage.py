@@ -59,7 +59,8 @@ class OpeningFollowingPage:
         self.initialize()
 
     def initialize(self):
-        pass
+        if not os.path.exists("/screenshots/Error_screenshots"):
+            os.makedirs("/screenshots/Error_screenshots")
 
         # self.chose_post()
     def chose_post(self, post_num=None):
@@ -91,28 +92,32 @@ class OpeningFollowingPage:
 
         Others = find_images(r'Images\others.png',
                              region_coefficients=[1, 1/2, "right", ""])
+        likes_buttom = find_images(r'Images\likes.png',
+                                   region_coefficients=[1, 1/2, "right", ""])
 
-        if (Others != None):
+        if Others is not None:
             hu.HumanLikeMove(Others[0][0], Others[0][1])
             py.click()
             time.sleep(1)
-            if self.validity() == 0:
-                pass
-            else:
-                app_logger.error('cannot see the following page page')
-                # Take a screenshot
-                screenshot = pyautogui.screenshot()
-                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                filename = f"FollowingPage_is_not_detected{timestamp}.png"
-                screenshot.save(filename)
-                return
+        elif likes_buttom is not None:
+            hu.HumanLikeMove(likes_buttom[0][0], likes_buttom[0][1])
+            py.click()
+            time.sleep(1)
 
+        # Retry validity check up to 3 times
+        for _ in range(3):
+            if self.validity() == 0:
+                break  # Page is detected, no need to retry
+            time.sleep(3)  # Wait for the page to possibly load
+
+        # Final check after all attempts
+        if self.validity() != 0:
+            app_logger.error(
+                'Cannot detect the following page after multiple attempts.')
+            # Take a screenshot for debugging
+
+            self.screenshoterror("LikesAndOthers_error")
         else:
-            likes_buttom = find_images(r'Images\likes.png',
-                                       region_coefficients=[1, 1/2, "right", ""])
-            if likes_buttom != None:
-                Locations.append((likes_buttom[0][0],
-                                  likes_buttom[0][1]))
 
             like_bottom_location = find_images(
                 r'Images\like_button.png',
@@ -123,10 +128,7 @@ class OpeningFollowingPage:
                                   like_bottom_location[0][1]))
             else:
                 app_logger.info('Like buttom cannot be detected')
-                screenshot = pyautogui.screenshot()
-                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                filename = f"Like_buttom_is_not_detected_{timestamp}.png"
-                screenshot.save(filename)
+                self.screenshoterror("like_button_error")
 
             comment_bottom_location = find_images(
                 r'Images\Comment_button.png',
@@ -137,10 +139,7 @@ class OpeningFollowingPage:
                 Locations.append((comment_bottom_location[0][0],
                                   comment_bottom_location[0][1]))
                 app_logger.info('comment buttom cannot be detected')
-                screenshot = pyautogui.screenshot()
-                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                filename = f"comment_buttom_is_not_detected_{timestamp}.png"
-                screenshot.save(filename)
+                self.screenshoterror("CommentButtomError")
 
             forward_bottom_location = find_images(
                 r'Images\forward.png',
@@ -152,10 +151,7 @@ class OpeningFollowingPage:
                                   forward_bottom_location[0][1]))
 
                 # app_logger.info('Forward buttom cannot be detected')
-                screenshot = pyautogui.screenshot()
-                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                filename = f"Forward_buttom_is_not_detected_{timestamp}.png"
-                screenshot.save(filename)
+                self.screenshoterror("ForwardButtomError")
 
             if len(Locations) == 0:
                 app_logger.error('Following page is not detected')
@@ -171,13 +167,14 @@ class OpeningFollowingPage:
                         int(location_coordinate[0]), int(
                             location_coordinate[1]))
                     time.sleep(0.4)
-                    py.moveRel(0, 35, 0.5)
-                    time.sleep(0.35)
+                    py.moveRel(0, 15, 0.3)
+                    time.sleep(0.3)
                     py.click()
                     time.sleep(2)
                     if self.validity() == 0:
                         pass
                     else:
+                        self.PostNum = self.PostNum+1
                         return
             app_logger.info('Cannot Recognize The following page.')
             print('Cannot Recognize The following page???')
@@ -193,6 +190,13 @@ class OpeningFollowingPage:
         else:
             return 0
 
+    def screenshoterror(self, name=''):
+        screenshot = pyautogui.screenshot()
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"{name}{timestamp}.png"
+        filepath = os.path.join(
+            r'/screenshots/Error_screenshots', filename)
 
-page_opener = OpeningFollowingPage()
-page_opener.openfollowingpage()
+
+# page_opener = OpeningFollowingPage()
+# page_opener.openfollowingpage()

@@ -4,7 +4,7 @@ from pyclick import HumanClicker, HumanCurve
 import math
 import random
 import time
-
+import pygetwindow as gw
 """
 This module provides functions to perform various human-like actions using the mouse and keyboard.
 It utilizes the pyautogui and pyclick libraries to create human-like movement curves and delays.
@@ -24,9 +24,41 @@ def MoveF(x, y, t):
 
 
 def HumanLikeMove(movex, movey):
+
+    # Get current mouse position
     x, y = py.position()
-    distance = math.sqrt(pow((x-movex), 2) + pow((y-movey), 2))
-# 2140 total
+
+    # Calculate distance from current position to target position
+    distance = math.sqrt(pow((x - movex), 2) + pow((y - movey), 2))
+
+    # Move the mouse according to the distance
+    if distance <= 150:
+        MoveF(movex, movey, random.uniform(0.7, 1.1))
+    elif 150 < distance <= 300:
+        MoveF(movex, movey, random.uniform(1.3, 1.6))
+    elif 300 < distance <= 700:
+        MoveF(movex, movey, random.uniform(1.6, 1.8))
+    else:
+        MoveF(movex, movey, random.uniform(1.8, 2))
+
+
+def RelHumanLikeMove(movex, movey):
+    # Get Chrome window details
+    chrome_window = gw.getWindowsWithTitle('Chrome')[0]
+    chrome_x, chrome_y = chrome_window.left, chrome_window.top
+    chrome_width, chrome_height = chrome_window.width, chrome_window.height
+
+    # Convert movex, movey to be relative to the Chrome window
+    movex = chrome_x + int((movex * chrome_width)/1920)
+    movey = chrome_y + int((movey * chrome_height)/1080)
+
+    # Get current mouse position
+    x, y = py.position()
+
+    # Calculate distance from current position to target position
+    distance = math.sqrt(pow((x - movex), 2) + pow((y - movey), 2))
+
+    # Move the mouse according to the distance
     if distance <= 150:
         MoveF(movex, movey, random.uniform(0.7, 1.1))
     elif 150 < distance <= 300:
