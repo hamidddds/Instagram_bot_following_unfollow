@@ -131,8 +131,8 @@ class Following:
 
         while True:
             if not first_iteration:
-                hu.RelHumanLikeMove(1000+random.randint(-10, 10),
-                                    550+random.randint(-20, 20),)
+                hu.HumanLikeMove(round(self.bbox[0]+400*3/4)+random.randint(-10, 10),
+                                 round(self.bbox[1]+400*3/4)+random.randint(-20, 20))
                 NowScroll = random.randint(-500, -400)
                 hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
 
@@ -179,8 +179,10 @@ class Following:
                     return 1
 
                 self.im = ImageGrab.grab(self.bbox)
-                hu.RelHumanLikeMove(1000+random.randint(-10, 10),
-                                    550+random.randint(-20, 20),)
+                # ????
+
+                hu.HumanLikeMove(round(self.bbox[0]+400*3/4)+random.randint(-10, 10),
+                                 round(self.bbox[1]+400*3/4)+random.randint(-20, 20))
                 NowScroll = random.randint(-500, -400)
                 hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
                 time.sleep(1)
@@ -199,8 +201,8 @@ class Following:
     def scoroll(self):
         # returning 0 means that we need to go to the next post
 
-        hu.HumanLikeMove(self.bbox[0]+self.bbox[2]/2+random.randint(-10, 10),
-                         self.bbox[1]+self.bbox[3]/2+random.randint(-20, 20),)
+        hu.HumanLikeMove(round(self.bbox[0]+400*3/4)+random.randint(-10, 10),
+                         round(self.bbox[1]+400*3/4)+random.randint(-20, 20))
 
         for _ in range(20):
 
@@ -288,6 +290,7 @@ class Following:
                         time.sleep(random.uniform(1, 1.4))
 
                         self.Followed += 1
+                        print("followed")
 
                         if self.Followed >= self.Following_Number:
                             while True:

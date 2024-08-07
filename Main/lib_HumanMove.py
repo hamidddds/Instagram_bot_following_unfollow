@@ -43,7 +43,8 @@ def calculate_duration(start_point, end_point, min_duration=1, max_duration=8):
     return duration
 
 
-def HumanLikeMove(end_point, steps=1000, max_shake_deviation=1.2):
+def HumanLikeMove(x, y, steps=1000, max_shake_deviation=1.2):
+    end_point = [x, y]
     mouse = Controller()
     start_point = mouse.position  # Get the current mouse position
 
@@ -68,6 +69,9 @@ def HumanLikeMove(end_point, steps=1000, max_shake_deviation=1.2):
     path_with_shake = add_shake_to_path(
         path, max_deviation=max_shake_deviation)
 
+    # Ensure the last point is exactly the end_point
+    path_with_shake[-1] = end_point
+
     # Divide the steps into three segments
     segment1 = steps // 3
     segment2 = 2 * steps // 3
@@ -76,8 +80,11 @@ def HumanLikeMove(end_point, steps=1000, max_shake_deviation=1.2):
     intervals = [0.5, 0.8, 1.5]
 
     # Calculate base intervals
-    base_intervals = [duration / (9 * segment1), duration / (
-        9 * (segment2 - segment1)), duration / (9 * (steps - segment2))]
+    base_intervals = [
+        duration / (9 * segment1),
+        duration / (9 * (segment2 - segment1)),
+        duration / (9 * (steps - segment2))
+    ]
 
     # Move the mouse in segments with varying speed
     for i in range(segment1):
@@ -91,6 +98,9 @@ def HumanLikeMove(end_point, steps=1000, max_shake_deviation=1.2):
     for i in range(segment2, steps):
         mouse.position = (path_with_shake[i][0], path_with_shake[i][1])
         time.sleep(base_intervals[2] * intervals[2])
+
+    # Manually set the final position to ensure accuracy
+    mouse.position = end_point
 
 
 def HumanLikeClick():
@@ -109,7 +119,6 @@ def Humanlikescroll(x):
     x2 = x % RN
     py.scroll(x2)
     for _ in range(RN):
-        py.click()
         time.sleep(random.uniform(0.7, 1.2))
         py.scroll(x1)
 

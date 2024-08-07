@@ -96,17 +96,20 @@ class OpeningFollowingPage:
                                    region_coefficients=[1, 1/2, "right", ""])
 
         if Others is not None:
-            hu.HumanLikeMove(Others[0][0], Others[0][1])
-            py.click()
-            time.sleep(1)
+            Locations = [Others[0][0], Others[0][1]]
         elif likes_buttom is not None:
-            hu.HumanLikeMove(likes_buttom[0][0], likes_buttom[0][1])
+            Locations = [likes_buttom[0][0], likes_buttom[0][1]]
+
+        if len(Locations) != 0:
+            hu.HumanLikeMove(Locations[0], Locations[1])
             py.click()
             time.sleep(1)
+        else:
+            Locations = []
 
         # Retry validity check up to 3 times
         for _ in range(3):
-            if self.validity() == 0:
+            if self.validity() == 1:
                 break  # Page is detected, no need to retry
             time.sleep(3)  # Wait for the page to possibly load
 
@@ -117,7 +120,6 @@ class OpeningFollowingPage:
             # Take a screenshot for debugging
 
             self.screenshoterror("LikesAndOthers_error")
-        else:
 
             like_bottom_location = find_images(
                 r'Images\like_button.png',

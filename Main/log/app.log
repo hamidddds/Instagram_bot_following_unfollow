@@ -275,3 +275,23 @@
 2024-08-07 09:42:05,140 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
 2024-08-07 09:44:16,526 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
 2024-08-07 09:46:23,875 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
+2024-08-07 13:52:54,499 - app_logger - INFO - Like buttom cannot be detected
+2024-08-07 13:52:54,598 - app_logger - INFO - comment buttom cannot be detected
+2024-08-07 13:53:18,580 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
+2024-08-07 13:54:46,950 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
+2024-08-07 13:55:06,276 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
+2024-08-07 13:55:57,933 - app_logger - INFO - Like buttom cannot be detected
+2024-08-07 13:55:58,034 - app_logger - INFO - comment buttom cannot be detected
+2024-08-07 13:56:21,604 - app_logger - INFO - Like buttom cannot be detected
+2024-08-07 13:56:21,716 - app_logger - INFO - comment buttom cannot be detected
+2024-08-07 13:58:36,747 - app_logger - INFO - Like buttom cannot be detected
+2024-08-07 13:58:36,870 - app_logger - ERROR - Following page is not detected
+2024-08-07 14:01:28,127 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
+2024-08-07 14:03:39,988 - app_logger - INFO - Like buttom cannot be detected
+2024-08-07 14:03:40,157 - app_logger - ERROR - Following page is not detected
+2024-08-07 14:08:26,181 - app_logger - INFO - Like buttom cannot be detected
+2024-08-07 14:13:23,446 - app_logger - INFO - Like buttom cannot be detected
+2024-08-07 14:13:23,562 - app_logger - INFO - comment buttom cannot be detected
+2024-08-07 14:15:42,514 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
+2024-08-07 14:15:42,614 - app_logger - INFO - Like buttom cannot be detected
+2024-08-07 14:15:42,752 - app_logger - INFO - comment buttom cannot be detected
