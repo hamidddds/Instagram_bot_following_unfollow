@@ -111,7 +111,7 @@ class OpeningFollowingPage:
             time.sleep(3)  # Wait for the page to possibly load
 
         # Final check after all attempts
-        if self.validity() != 0:
+        if self.validity() == 0:
             app_logger.error(
                 'Cannot detect the following page after multiple attempts.')
             # Take a screenshot for debugging
@@ -171,7 +171,7 @@ class OpeningFollowingPage:
                     time.sleep(0.3)
                     py.click()
                     time.sleep(2)
-                    if self.validity() == 0:
+                    if self.validity() == 1:
                         pass
                     else:
                         self.PostNum = self.PostNum+1
@@ -186,7 +186,7 @@ class OpeningFollowingPage:
     def validity(self):
         V = find_images('images/followingValidity.png')
         if V != None:
-            pass
+            return 1
         else:
             return 0
 

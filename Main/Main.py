@@ -83,7 +83,7 @@ if __name__ == "__main__":
     clear_terminal()
     ProcessBar()
     TargetName = "partoo333"
-    Number_of_following = 5
+    Number_of_following = 10
     following_flag = 1
     postnum = 1
     page_opener = openpage.OpeningFollowingPage()
@@ -121,7 +121,7 @@ if __name__ == "__main__":
             if Number_of_following >= Follow_p.Followed:
                 following_flag = 0
         else:
-            while 1500-(time.time()-start_time) > 0:
+            while 1800-(time.time()-start_time) > 0:
                 hu.HumanLikeWait(20, 500, 500)
                 time.sleep(60)
                 following_flag = 1

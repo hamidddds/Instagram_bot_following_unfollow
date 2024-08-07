@@ -108,20 +108,17 @@ class Following:
         print('Starting Following ...')
 
     def convertor(self):
-
         # Get Chrome window details
         chrome_window = gw.getWindowsWithTitle('Chrome')[0]
         chrome_x, chrome_y = chrome_window.left, chrome_window.top
         chrome_width, chrome_height = chrome_window.width, chrome_window.height
 
         # Convert coordinates to be relative to the Chrome window
+        x1 = chrome_x + int((chrome_width - 420) / 2) - 10
+        y1 = chrome_y + int((chrome_height - 450) / 2) + 60
+        x2 = x1 + 400  # width of the window
+        y2 = y1 + 430  # height of the window
 
-        x1 = chrome_x + int(chrome_width-420)/2-10
-        y1 = chrome_y + int(chrome_height-450)/2+60
-        # x2 = chrome_x + x1 + 400
-        # y2 = chrome_y + y1 + 430
-        x2 = 400  # width and height of the window
-        y2 = 430
         return (x1, y1, x2, y2)
 
     def Finding_follow_buttom(self):
@@ -156,7 +153,7 @@ class Following:
             time.sleep(random.uniform(0.5, 0.6))
             # start following
 
-            if len(FollowButtom) != None:
+            if FollowButtom != None:
                 for pos in FollowButtom:
                     py.moveTo(py.position()[
                         0], pos[1] + random.randint(-8, 8)-5, duration=random.uniform(0.4, 0.5))
@@ -202,10 +199,8 @@ class Following:
     def scoroll(self):
         # returning 0 means that we need to go to the next post
 
-        hu.RelHumanLikeMove(1000+random.randint(-10, 10),
-                            550+random.randint(-20, 20),)
-
-        time.sleep(0.4)
+        hu.HumanLikeMove(self.bbox[0]+self.bbox[2]/2+random.randint(-10, 10),
+                         self.bbox[1]+self.bbox[3]/2+random.randint(-20, 20),)
 
         for _ in range(20):
 
@@ -215,6 +210,7 @@ class Following:
                 r'Images\Validity_following\Follow_buttom.png')
 
             if Following_image == None or len(Following_image) < 3:
+                print(self.bbox)
                 self.im = ImageGrab.grab(self.bbox)
                 NowScroll = random.randint(-500, -400)
                 hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
@@ -286,9 +282,9 @@ class Following:
                         hu.HumanLikeMove(FollowButtom[0][0]+random.randint(25, 35),
                                          FollowButtom[0][1]+random.randint(10, 15))
                         time.sleep(random.uniform(0.8, 1))
-                        # py.click()
+                        py.click()
                         time.sleep(0.5)
-                        winsound.Beep(1000, 200)
+                        # winsound.Beep(1000, 200)
                         time.sleep(random.uniform(1, 1.4))
 
                         self.Followed += 1
@@ -302,6 +298,7 @@ class Following:
                                     with open('my_list.json', 'w') as file:
                                         json.dump(self.saved_following, file)
                                         self.situation = 10
+                                        self.Followed = 0
                                         return 1
                                 else:
                                     py.hotkey('ctrl', 'w')
@@ -359,6 +356,6 @@ class Following:
 # time.sleep(1)
 # clear_terminal()
 
-folowp = Following(30)
-# folowp.CheckValidity()
-folowp.Finding_follow_buttom()
+# folowp = Following(30)
+# # folowp.CheckValidity()
+# folowp.Finding_follow_buttom()
