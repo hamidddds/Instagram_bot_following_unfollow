@@ -43,8 +43,10 @@ def calculate_duration(start_point, end_point, min_duration=1, max_duration=8):
     return duration
 
 
-def HumanLikeMove(x, y, steps=1000, max_shake_deviation=1.2):
-    end_point = [x, y]
+def HumanLikeMove(coordinate, steps=1000, max_shake_deviation=1.2):
+    end_point = coordinate
+    x = coordinate[0]
+    y = coordinate[1]
     mouse = Controller()
     start_point = mouse.position  # Get the current mouse position
 
@@ -117,10 +119,20 @@ def Humanlikescroll(x):
     RN = random.randint(1, 3)
     x1 = round(x/RN)
     x2 = x % RN
+
     py.scroll(x2)
+
     for _ in range(RN):
         time.sleep(random.uniform(0.7, 1.2))
-        py.scroll(x1)
+        py.scroll(x1+random.randint(0, 15))
+
+    Chance = random.randint(1, 3)
+    if Chance == 1:
+
+        scroll_fake = random.randint(100, 200)
+        py.scroll(scroll_fake)
+        time.sleep(random.uniform(1, 2))
+        py.scroll(-scroll_fake+random.randint(0, 20))
 
 
 def HumanLikeKeyboard(word):

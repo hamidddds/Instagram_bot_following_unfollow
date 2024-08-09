@@ -16,20 +16,6 @@ import lib_OpenFollowinPage as openpage
 from Lib_Finding_image_on_screen import find_images
 
 
-# def locateOnScreen(image_path, region=None, confidence=0.7):
-#     try:
-#         return py.locateOnScreen(image_path, region=region, confidence=confidence)
-#     except py.ImageNotFoundException:
-#         return None
-
-
-# def locateAllOnScreen(image_path, region=None, confidence=0.7):
-#     try:
-#         return list(py.locateAllOnScreen(image_path, region=region, confidence=confidence))
-#     except ImageNotFoundException:
-#         return []
-
-
 def clear_terminal():
     """
     Clears the terminal screen.
@@ -73,17 +59,17 @@ class Following:
         self.Followed_temp = 0
         self.Followed = 0
         self.situation = 0
-        # self.PostBox = (650, 130, 950, 700)
-        # self.FollowingBox = (700, 350, 600, 450)
-        # self.followingpage = (850, 127, 500, 200)
-        # the box coordinates
-        self.bbox = []
+        # self.bbox = self.convertor()
+        self.bbox = (330, 330, 600, 600)
+
+        self.inside_box_pos = (724+random.randint(-10, 10),
+                               601+random.randint(-30, -30))
+
+        self.inside_box_pos = (150+random.randint(-10, 10),
+                               450+random.randint(-30, -30))
+
         # 0 means it is under process
         self.im = None
-        # 1 means it is over
-        # 3 cannot open followers page
-        # 4 end of post
-        # 10 means it is ended
         self.PostNum = 1  # 0 means it doesnt need to change the post
         self.Following_Number = RemainedFollowed
         # self.saved_following = []
@@ -91,39 +77,26 @@ class Following:
         self.initialize()
 
     def initialize(self):
+
         if os.path.exists('my_list.json'):
             with open('my_list.json', 'r') as file:
                 self.saved_following = json.load(file)
         else:
             self.saved_following = []
+
         if os.path.exists('Finish_following_posts.json'):
             with open('Finish_following_posts.json', 'r') as file:
                 self.finished_following_post = json.load(file)
         else:
             self.finished_following_post = []
 
-        self.bbox = self.convertor()
-
         print('Follower list has oppened ...')
         print('Starting Following ...')
-
-    def convertor(self):
-        # Get Chrome window details
-        chrome_window = gw.getWindowsWithTitle('Chrome')[0]
-        chrome_x, chrome_y = chrome_window.left, chrome_window.top
-        chrome_width, chrome_height = chrome_window.width, chrome_window.height
-
-        # Convert coordinates to be relative to the Chrome window
-        x1 = chrome_x + int((chrome_width - 420) / 2) - 10
-        y1 = chrome_y + int((chrome_height - 450) / 2) + 60
-        x2 = x1 + 400  # width of the window
-        y2 = y1 + 430  # height of the window
-
-        return (x1, y1, x2, y2)
 
     def Finding_follow_buttom(self):
 
         check = self.CheckValidity()
+
         if check == 0:
             print("cannot open following box")
             return 0
@@ -131,8 +104,7 @@ class Following:
 
         while True:
             if not first_iteration:
-                hu.HumanLikeMove(round(self.bbox[0]+400*3/4)+random.randint(-10, 10),
-                                 round(self.bbox[1]+400*3/4)+random.randint(-20, 20))
+                hu.HumanLikeMove(self.inside_box_pos)
                 NowScroll = random.randint(-500, -400)
                 hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
 
@@ -181,8 +153,7 @@ class Following:
                 self.im = ImageGrab.grab(self.bbox)
                 # ????
 
-                hu.HumanLikeMove(round(self.bbox[0]+400*3/4)+random.randint(-10, 10),
-                                 round(self.bbox[1]+400*3/4)+random.randint(-20, 20))
+                hu.HumanLikeMove(self.inside_box_pos)
                 NowScroll = random.randint(-500, -400)
                 hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
                 time.sleep(1)
@@ -362,3 +333,17 @@ class Following:
 # folowp = Following(30)
 # # folowp.CheckValidity()
 # folowp.Finding_follow_buttom()
+
+    # def convertor(self):
+    #     # Get Chrome window details
+    #     chrome_window = gw.getWindowsWithTitle('Chrome')[0]
+    #     chrome_x, chrome_y = chrome_window.left, chrome_window.top
+    #     chrome_width, chrome_height = chrome_window.width, chrome_window.height
+
+    #     # Convert coordinates to be relative to the Chrome window
+    #     x1 = chrome_x + int((chrome_width - 420) / 2) - 10
+    #     y1 = chrome_y + int((chrome_height - 450) / 2) + 60
+    #     x2 = x1 + 400  # width of the window
+    #     y2 = y1 + 430  # height of the window
+
+    #     return (x1, y1, x2, y2)

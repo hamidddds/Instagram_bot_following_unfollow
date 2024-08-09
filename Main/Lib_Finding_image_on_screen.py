@@ -65,12 +65,14 @@ def get_chrome_region(region_coefficients):
         raise Exception("No visible Chrome window found")
 
 
-def find_images(template_path, region_coefficients=None, match_threshold=None):
+def find_images(template_path, region_coefficients=None, match_threshold=None, chrome_region=None):
     if match_threshold is None:
         match_threshold = 0.8
     if region_coefficients is None:
         region_coefficients = [1, 1, "", ""]
-    chrome_region = get_chrome_region(region_coefficients)
+
+    if chrome_region == None:
+        chrome_region = get_chrome_region(region_coefficients)
 
     matching_rectangles, screenshot_np = find_all_templates(
         template_path, chrome_region, match_threshold)

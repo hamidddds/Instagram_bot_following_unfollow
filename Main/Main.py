@@ -13,6 +13,30 @@ import os
 import platform
 import lib_OpenFollowinPage as openpage
 import lib_Follwoing as Following
+import pygetwindow as gw
+import pyautogui
+
+
+def changewindowssize():
+    # Find the Chrome window
+    chrome_windows = [win for win in gw.getWindowsWithTitle(
+        'Chrome') if not win.isMaximized]
+
+    if chrome_windows:
+        # Select the first Chrome window found
+        chrome_window = chrome_windows[0]
+
+        # Set the desired width and height
+        new_width = 1400
+        new_height = 1038
+
+        # Resize the window
+        chrome_window.resizeTo(new_width, new_height)
+
+        # Move the window to the top-left corner
+        chrome_window.moveTo(-8, 1)
+    else:
+        print("Chrome window not found.")
 
 
 def clear_terminal():
@@ -89,19 +113,18 @@ if __name__ == "__main__":
     page_opener = openpage.OpeningFollowingPage()
     Follow_p = Following.Following(Number_of_following)
 
-    ChangeTheProcessBar('Openning the webpage ...')
-
     width, height = get_screen_resolution()
     print(f"Current screen resolution: {width}x{height}")
 
     # Check if the resolution is 1920x1080
-    if width != 1920 or height != 1080:
-        print("Screen resolution is not 1920x1080. Terminating the script.")
-        app_logger.error(
-            'Screen resolution is not 1920x1080. Terminating the script.')
-        sys.exit(1)
+    changewindowssize()
 
-    ChangeTheProcessBar('Starting Following ...')
+    # if width != 1920 or height != 1080:
+    #     print("Screen resolution is not 1920x1080. Terminating the script.")
+    #     app_logger.error(
+    #         'Screen resolution is not 1920x1080. Terminating the script.')
+    #     sys.exit(1)
+
     # openpage()
 
     start_time = time.time()
@@ -114,8 +137,11 @@ if __name__ == "__main__":
             EnterUrl("www.instagram.com/"+TargetName)
             ChangeTheProcessBar('Following ...')
             page_opener.chose_post(postnum)
-            page_opener.openfollowingpage()
-            result = Follow_p.Finding_follow_buttom()
+            Following_box_validity = page_opener.openfollowingBox()
+
+            if Following_box_validity == 1:
+                result = Follow_p.Finding_follow_buttom()
+
             if isinstance(result, tuple):
                 _, postnum = result
             if Number_of_following >= Follow_p.Followed:
