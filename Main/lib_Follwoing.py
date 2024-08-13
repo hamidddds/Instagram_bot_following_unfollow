@@ -1,12 +1,10 @@
 from PIL import ImageGrab, ImageChops
 from datetime import datetime
-from pyscreeze import ImageNotFoundException
 import lib_HumanMove as hu
 import pyautogui as py
 import random
 import time
 import json
-from PIL import ImageGrab  # Required for screen capture
 import pyperclip  # Required for clipboard operations
 import os
 import platform
@@ -60,13 +58,13 @@ class Following:
         self.Followed = 0
         self.situation = 0
         # self.bbox = self.convertor()
-        self.bbox = (330, 330, 600, 600)
+        self.Following_box = (330, 330, 600, 600)
 
-        self.inside_box_pos = (724+random.randint(-10, 10),
+        self.inside_box_pos = (790+random.randint(-10, 10),
                                601+random.randint(-30, -30))
 
-        self.inside_box_pos = (150+random.randint(-10, 10),
-                               450+random.randint(-30, -30))
+        self.outside_box_pos = (350+random.randint(-10, 10),
+                                450+random.randint(-30, -30))
 
         # 0 means it is under process
         self.im = None
@@ -98,11 +96,13 @@ class Following:
         check = self.CheckValidity()
 
         if check == 0:
-            print("cannot open following box")
+            print("cannot see the following box")
             return 0
+
         first_iteration = True
 
         while True:
+
             if not first_iteration:
                 hu.HumanLikeMove(self.inside_box_pos)
                 NowScroll = random.randint(-500, -400)
@@ -112,8 +112,7 @@ class Following:
 
             a = self.scoroll()
             # move out of box
-            hu.HumanLikeMove(round(self.bbox[0]/2)+random.randint(-10, 10),
-                             round(self.bbox[1]/2)+random.randint(-20, 20),)
+            hu.HumanLikeMove(self.outside_box_pos)
 
             if a == 0:  # end of the scroll
                 self.PostNum = self.PostNum+1
@@ -127,22 +126,29 @@ class Following:
 
             if FollowButtom != None:
                 for pos in FollowButtom:
-                    py.moveTo(py.position()[
-                        0], pos[1] + random.randint(-8, 8)-5, duration=random.uniform(0.4, 0.5))
-                    # First, move to the x-axis position
-                    py.moveTo(pos[0] - 240 + random.randint(-15, 15),
-                              py.position()[1], duration=random.uniform(0.4, 0.5))
 
+                    check = self.CheckValidity()
+
+                    if check == 2:
+                        print("cannot see the following box but fixed")
+                        break
+                    elif check == 0:
+                        print("cannot see the following box")
+                        return 0
+
+                    hu.HumanLikeMove(
+                        [pos[0] - 240 + random.randint(-10, 10), pos[1]-7])
                     # Then, move to the y-axis position
-
                     with py.hold('ctrl'):
                         py.click()
                     time.sleep(random.uniform(0.3, 0.5))
-                    py.moveRel(0, -10, 0.3)
+                    py.moveRel(random.randint(1, 3), 3, 0.3)
                     with py.hold('ctrl'):
                         py.click()
                     time.sleep(random.uniform(0.3, 0.5))
-                    py.moveRel(-150, 0, 0.6)
+                    hu.HumanLikeMove([pos[0]-240-random.randint(200, 300),
+                                     pos[1] + random.randint(40, 60)])
+                    time.sleep(random.uniform(0.4, 0.6))
 
                 # ceheck the following is over or not
                 openeningPages = self.Open_pages()
@@ -150,13 +156,15 @@ class Following:
                     print("Done with following")
                     return 1
 
-                self.im = ImageGrab.grab(self.bbox)
+                self.im = ImageGrab.grab(self.Following_box)
                 # ????
 
                 hu.HumanLikeMove(self.inside_box_pos)
                 NowScroll = random.randint(-500, -400)
                 hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
-                time.sleep(1)
+                time.sleep(0.5)
+                hu.HumanLikeMove(self.outside_box_pos)
+                time.sleep(0.5)
                 end_scroll = self.EndOfScroll()
 
                 if end_scroll == 1:
@@ -172,10 +180,16 @@ class Following:
     def scoroll(self):
         # returning 0 means that we need to go to the next post
 
-        hu.HumanLikeMove(round(self.bbox[0]+400*3/4)+random.randint(-10, 10),
-                         round(self.bbox[1]+400*3/4)+random.randint(-20, 20))
+        hu.HumanLikeMove(self.inside_box_pos)
+        x, y = py.position()
 
         for _ in range(20):
+
+            # if the cursor move a long disntace
+
+            x1, y1 = py.position()
+            if abs(x1-x) > 21 or abs(y1-y) > 21:
+                hu.HumanLikeMove([x, y])
 
             Following_image = []
 
@@ -183,12 +197,11 @@ class Following:
                 r'Images\Validity_following\Follow_buttom.png')
 
             if Following_image == None or len(Following_image) < 3:
-                print(self.bbox)
-                self.im = ImageGrab.grab(self.bbox)
+                print(self.Following_box)
+                self.im = ImageGrab.grab(self.Following_box)
                 NowScroll = random.randint(-500, -400)
                 hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
-                time.sleep(1)
-
+                time.sleep(random.uniform(0.5, 0.8))
                 end_scroll = self.EndOfScroll()
 
                 if end_scroll == 1:
@@ -203,7 +216,7 @@ class Following:
                 return 1
 
     def EndOfScroll(self):
-        a2 = ImageGrab.grab(self.bbox)
+        a2 = ImageGrab.grab(self.Following_box)
         diff = ImageChops.difference(self.im, a2)
         if diff.getbbox() is None:
             print('End of scroll,lets go to the next post!')
@@ -252,8 +265,8 @@ class Following:
 
                     if FollowButtom:
                         print('Following...')
-                        hu.HumanLikeMove(FollowButtom[0][0]+random.randint(25, 35),
-                                         FollowButtom[0][1]+random.randint(10, 15))
+                        hu.HumanLikeMove([FollowButtom[0][0]+random.randint(-25, 25),
+                                         FollowButtom[0][1]+random.randint(-10, 10)])
                         time.sleep(random.uniform(0.8, 1))
                         py.click()
                         time.sleep(0.5)
@@ -315,7 +328,8 @@ class Following:
                     py.press('f5')
                     time.sleep(2)
                     a = openpage.OpeningFollowingPage()
-                    a.openfollowingpage()
+                    a.openfollowingBox()
+                    return 2
 
         if i == 3:
 
@@ -325,25 +339,3 @@ class Following:
             screenshot.save(filename)
             print("NotDone")
             return 0
-
-
-# time.sleep(1)
-# clear_terminal()
-
-# folowp = Following(30)
-# # folowp.CheckValidity()
-# folowp.Finding_follow_buttom()
-
-    # def convertor(self):
-    #     # Get Chrome window details
-    #     chrome_window = gw.getWindowsWithTitle('Chrome')[0]
-    #     chrome_x, chrome_y = chrome_window.left, chrome_window.top
-    #     chrome_width, chrome_height = chrome_window.width, chrome_window.height
-
-    #     # Convert coordinates to be relative to the Chrome window
-    #     x1 = chrome_x + int((chrome_width - 420) / 2) - 10
-    #     y1 = chrome_y + int((chrome_height - 450) / 2) + 60
-    #     x2 = x1 + 400  # width of the window
-    #     y2 = y1 + 430  # height of the window
-
-    #     return (x1, y1, x2, y2)

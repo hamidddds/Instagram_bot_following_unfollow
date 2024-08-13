@@ -5,26 +5,25 @@ import lib_HumanMove as hu
 import time
 import pyautogui as py
 import random
-import sys
-import lib_MoveToPosition as mp
 import tkinter as t
 from tkinter import ttk
 import os
 import platform
 import lib_OpenFollowinPage as openpage
 import lib_Follwoing as Following
-import pygetwindow as gw
-import pyautogui
 
 
 def changewindowssize():
-    # Find the Chrome window
-    chrome_windows = [win for win in gw.getWindowsWithTitle(
-        'Chrome') if not win.isMaximized]
+    # Find all Chrome windows
+    chrome_windows = gw.getWindowsWithTitle('Chrome')
 
     if chrome_windows:
         # Select the first Chrome window found
         chrome_window = chrome_windows[0]
+
+        # If the window is maximized, restore it first
+        if chrome_window.isMaximized:
+            chrome_window.restore()
 
         # Set the desired width and height
         new_width = 1400
@@ -119,14 +118,6 @@ if __name__ == "__main__":
     # Check if the resolution is 1920x1080
     changewindowssize()
 
-    # if width != 1920 or height != 1080:
-    #     print("Screen resolution is not 1920x1080. Terminating the script.")
-    #     app_logger.error(
-    #         'Screen resolution is not 1920x1080. Terminating the script.')
-    #     sys.exit(1)
-
-    # openpage()
-
     start_time = time.time()
 
     while True:
@@ -142,10 +133,10 @@ if __name__ == "__main__":
             if Following_box_validity == 1:
                 result = Follow_p.Finding_follow_buttom()
 
-            if isinstance(result, tuple):
-                _, postnum = result
-            if Number_of_following >= Follow_p.Followed:
-                following_flag = 0
+                if isinstance(result, tuple):
+                    _, postnum = result
+                if Number_of_following >= Follow_p.Followed:
+                    following_flag = 0
         else:
             while 1800-(time.time()-start_time) > 0:
                 hu.HumanLikeWait(20, 500, 500)

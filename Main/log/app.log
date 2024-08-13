@@ -356,3 +356,5 @@
 2024-08-09 15:10:35,320 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
 2024-08-09 15:10:35,492 - app_logger - INFO - Like buttom cannot be detected
 2024-08-09 15:10:52,500 - app_logger - INFO - Cannot Recognize The following page.
+2024-08-12 17:21:33,017 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
+2024-08-12 17:21:33,100 - app_logger - INFO - Cannot Recognize The following page.

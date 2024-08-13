@@ -123,16 +123,19 @@ def Humanlikescroll(x):
     py.scroll(x2)
 
     for _ in range(RN):
-        time.sleep(random.uniform(0.7, 1.2))
+
+        Chance = random.randint(1, 4)
+        if Chance == 1:
+            scroll_fake = random.randint(100, 200)
+            py.scroll(scroll_fake)
+            time.sleep(random.uniform(1, 2))
+            py.scroll(-scroll_fake+random.randint(0, 20))
+            time.sleep(random.uniform(1, 1.5))
+
         py.scroll(x1+random.randint(0, 15))
-
-    Chance = random.randint(1, 3)
-    if Chance == 1:
-
-        scroll_fake = random.randint(100, 200)
-        py.scroll(scroll_fake)
-        time.sleep(random.uniform(1, 2))
-        py.scroll(-scroll_fake+random.randint(0, 20))
+        time.sleep(random.uniform(0.2, 0.4))
+        py.moveRel(random.randint(-3, 3), random.randint(-3, 3))
+        time.sleep(random.uniform(0.7, 1.2))
 
 
 def HumanLikeKeyboard(word):
@@ -207,5 +210,5 @@ def HumanLikeWait(t, Bx, By):
         time.sleep(random.uniform(0.1, 0.3))
         fromPoint = py.position()
 
-    HumanLikeMove(first[0]+random.randint(-5, 5),
-                  first[1]+random.randint(-5, 5))
+    HumanLikeMove([first[0]+random.randint(-5, 5),
+                  first[1]+random.randint(-5, 5)])

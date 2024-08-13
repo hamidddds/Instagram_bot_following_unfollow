@@ -43,12 +43,13 @@ def generate_filename_with_timestamp():
 
 class OpeningFollowingPage:
     def __init__(self) -> None:
-        self.First_post_location = [432+random.randint(-20, 20), 518]
+        self.First_post_location = [
+            432+random.randint(-20, 20), 840+random.randint(-20, 20)]
         self.Followed_temp = 0
         self.Followed = 0
         self.situation = 0
         self.finished_following_post = []
-        self.likecommentfowrward_position = (450, 650, 800, 350)
+        self.likecommentfowrward_position = (650, 500, 600, 400)
         # 0 means unsucess
         # 1 means it is sucess
         self.PostNum = 1  # 0 means it doesnt need to change the post
@@ -85,6 +86,7 @@ class OpeningFollowingPage:
         time.sleep(random.uniform(2, 3))
 
     def openfollowingBox(self):
+        self.validity()
         Locations = []
 
         Others = find_images(r'Images\others.png',
@@ -172,6 +174,13 @@ class OpeningFollowingPage:
         except Exception as e:
             print(f"An error occurred: {e}")
 
+    def validity(self):
+        postpage = copyurlUrl()
+        if 'instagram.com/p/' in postpage:
+            time.sleep(2)
+            print("following box is not oppened")
+        else:
+            return 0
 
 # page_opener = OpeningFollowingPage()
 # page_opener.openfollowingBox()
