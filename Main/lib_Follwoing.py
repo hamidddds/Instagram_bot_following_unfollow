@@ -54,6 +54,7 @@ def copyurlUrl():  # new
 
 class Following:
     def __init__(self, RemainedFollowed) -> None:
+        self.scrollCount = 0
         self.Followed = 0
         self.situation = 0
         # self.bbox = self.convertor()
@@ -169,22 +170,23 @@ class Following:
                 if end_scroll == 1:
                     self.finished_following_post.append(copyurlUrl())
 
-                    with open('finished_following_post.json', 'w') as file:
-                        json.dump(self.finished_following_post, file)
-
+                    self.EndOfScroll_validity()
+                    self.PostNum = self.PostNum+1
                     return 0  # end of scroll
 
                 FollowButtom = []
 
     def scoroll(self):
         # returning 0 means that we need to go to the next post
+        self.scrollCount = 0
 
         hu.HumanLikeMove(self.inside_box_pos)
         x, y = py.position()
 
-        for _ in range(20):
+        for _ in range(300):
+            self.scrollCount = self.scrollCount+1
 
-            # if the cursor move a long disntace
+            # if the cursor move a long disntace bring it back
 
             x1, y1 = py.position()
             if abs(x1-x) > 21 or abs(y1-y) > 21:
@@ -196,7 +198,6 @@ class Following:
                 r'Images\Validity_following\Follow_buttom.png')
 
             if Following_image == None or len(Following_image) < 3:
-                print(self.Following_box)
                 self.im = ImageGrab.grab(self.Following_box)
                 NowScroll = random.randint(-500, -400)
                 hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
@@ -206,9 +207,8 @@ class Following:
                 if end_scroll == 1:
                     self.finished_following_post.append(copyurlUrl())
 
-                    with open('finished_following_post.json', 'w') as file:
-                        json.dump(self.finished_following_post, file)
-
+                    self.EndOfScroll_validity()
+                    self.PostNum = self.PostNum+1
                     return 0  # end of scroll
             else:
 
@@ -338,3 +338,8 @@ class Following:
             screenshot.save(filename)
             print("NotDone")
             return 0
+
+    def EndOfScroll_validity(self):
+        if self.scrollCount > 20:
+            with open('finished_following_post.json', 'w') as file:
+                json.dump(self.finished_following_post, file)

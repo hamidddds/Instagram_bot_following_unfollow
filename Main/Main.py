@@ -11,6 +11,16 @@ import os
 import platform
 import lib_OpenFollowinPage as openpage
 import lib_Follwoing as Following
+import lib_ResultManager as result
+
+
+class Results:
+    def __init__(self) -> None:
+        self.TotalNumberOfFollowed == 0
+        self.DailyNumberOffollowed == 0
+        self.LastStartTimeFollowing = 0
+        self.targetname = ""
+        self.typename = ""
 
 
 def changewindowssize():
@@ -107,13 +117,15 @@ def ProcessBar():
 if __name__ == "__main__":
     clear_terminal()
     ProcessBar()
-    TargetName = "partoo333"
+    TargetName = "academy.movafaghyat"
+    HashtagName = "tech"
     Number_of_following = 10
     following_flag = 1
     postnum = 1
     total_follow = 0
     page_opener = openpage.OpeningFollowingPage()
     Follow_p = Following.Following(Number_of_following)
+    result.ResultsManager()
 
     width, height = get_screen_resolution()
     print(f"Current screen resolution: {width}x{height}")
@@ -128,15 +140,17 @@ if __name__ == "__main__":
 
         if following_flag == 1:
             ChangeTheProcessBar('Openning the webpage ...')
-            EnterUrl("www.instagram.com/"+TargetName)
+            # EnterUrl("www.instagram.com/"+TargetName)
+            EnterUrl(f"www.instagram.com/explore/tags/{HashtagName}")
             ChangeTheProcessBar('Following ...')
-            page_opener.chose_post(postnum)
+            page_opener.chose_post(postnum, Target="Hashtag")
             Following_box_validity = page_opener.openfollowingBox()
 
             if Following_box_validity == 1:
                 temp = Number_of_following - Follow_p.Followed
                 Follow_p.Following_Number = max(temp, 0)
                 result = Follow_p.Finding_follow_buttom()
+
                 postnum = Follow_p.PostNum
 
             if Number_of_following <= Follow_p.Followed:

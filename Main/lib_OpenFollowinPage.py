@@ -43,8 +43,7 @@ def generate_filename_with_timestamp():
 
 class OpeningFollowingPage:
     def __init__(self) -> None:
-        self.First_post_location = [
-            432+random.randint(-20, 20), 840+random.randint(-20, 20)]
+        self.First_post_location = []
         self.Followed_temp = 0
         self.Followed = 0
         self.situation = 0
@@ -63,7 +62,14 @@ class OpeningFollowingPage:
 
        # self.chose_post()
 
-    def chose_post(self, post_num=None):
+    def chose_post(self, post_num=None, Target="Page"):
+
+        if Target == "Page":
+            self.First_post_location = [
+                432+random.randint(-20, 20), 840+random.randint(-20, 20)]
+        elif Target == "Hashtag":
+            self.First_post_location = (500+random.randint(-50, 50),
+                                        520+random.randint(-50, 50))
 
         if post_num is None:
             post_num = self.PostNum
