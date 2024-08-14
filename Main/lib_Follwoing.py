@@ -284,7 +284,7 @@ class Following:
                                     with open('my_list.json', 'w') as file:
                                         json.dump(self.saved_following, file)
                                         self.situation = 10
-                                        self.Followed = 0
+                                        # self.Followed = 0
                                         return 1
                                 else:
                                     py.hotkey('ctrl', 'w')

@@ -81,7 +81,7 @@ def get_screen_resolution():
 # write a class for all essential variables
 
 
-def EnterUrl(Nameurl):
+def EnterUrl(TargetName, type):
     chrome_window = gw.getWindowsWithTitle('Google Chrome')[0]
     chrome_window.activate()
     time.sleep(0.5)
@@ -90,7 +90,13 @@ def EnterUrl(Nameurl):
 
     # Wait for a short time to ensure the address bar is focused
     time.sleep(0.5)
-    hu.HumanLikeKeyboard(Nameurl)
+    if type == "Hashtag":
+        situation = "explore/tags/"
+    elif type == "Page":
+        situation = ""
+    link = f"www.instagram.com/" + situation + TargetName
+
+    hu.HumanLikeKeyboard(link)
     time.sleep(random.uniform(0.5, 0.8))
     py.press('enter')
     time.sleep(3)
@@ -114,18 +120,23 @@ def ProcessBar():
     return
 
 
-if __name__ == "__main__":
+def initiate():
     clear_terminal()
-    ProcessBar()
-    TargetName = "academy.movafaghyat"
-    HashtagName = "tech"
-    Number_of_following = 10
+    # ProcessBar()
+
+
+if __name__ == "__main__":
+    initiate()
+    # TargetName = "academy.movafaghyat"
+    TargetType = "Hashtag"
+    TargetName = "tech"
+    Number_of_following = 15
     following_flag = 1
     postnum = 1
     total_follow = 0
     page_opener = openpage.OpeningFollowingPage()
-    Follow_p = Following.Following(Number_of_following)
-    result.ResultsManager()
+    Following_func = Following.Following(Number_of_following)
+    Result = result.ResultsManager()
 
     width, height = get_screen_resolution()
     print(f"Current screen resolution: {width}x{height}")
@@ -139,28 +150,29 @@ if __name__ == "__main__":
         start_time = time.time()
 
         if following_flag == 1:
-            ChangeTheProcessBar('Openning the webpage ...')
-            # EnterUrl("www.instagram.com/"+TargetName)
-            EnterUrl(f"www.instagram.com/explore/tags/{HashtagName}")
-            ChangeTheProcessBar('Following ...')
-            page_opener.chose_post(postnum, Target="Hashtag")
+            # ChangeTheProcessBar('Openning the webpage ...')
+            EnterUrl(TargetName=TargetName, type=TargetType)
+            # ChangeTheProcessBar('Following ...')
+            page_opener.chose_post(postnum, Target=TargetType)
             Following_box_validity = page_opener.openfollowingBox()
 
             if Following_box_validity == 1:
-                temp = Number_of_following - Follow_p.Followed
-                Follow_p.Following_Number = max(temp, 0)
-                result = Follow_p.Finding_follow_buttom()
+                temp = Number_of_following - Following_func.Followed
 
-                postnum = Follow_p.PostNum
+                if temp > 0:
+                    Following_func.Following_Number = temp
+                    Situation = Following_func.Finding_follow_buttom()
 
-            if Number_of_following <= Follow_p.Followed:
-                total_follow = total_follow + Number_of_following
-                print(f"total follow number is equal to = {total_follow}")
-                following_flag = 0
+                else:
+
+                    Result.update(target_name=TargetName, type_name=TargetType,
+                                  number_of_followed_today=Following_func.Followed, success_rate=80.0)
+                    following_flag = 0
+                    Following_func.Following_Number = Number_of_following
 
         else:
             while 1800-(time.time()-start_time) > 0:
                 hu.HumanLikeWait(20, 500, 500)
                 time.sleep(60)
 
-                following_flag = 1
+            following_flag = 1
