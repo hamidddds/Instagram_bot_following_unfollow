@@ -54,7 +54,6 @@ def copyurlUrl():  # new
 
 class Following:
     def __init__(self, RemainedFollowed) -> None:
-        self.Followed_temp = 0
         self.Followed = 0
         self.situation = 0
         # self.bbox = self.convertor()
@@ -116,7 +115,7 @@ class Following:
 
             if a == 0:  # end of the scroll
                 self.PostNum = self.PostNum+1
-                return 0, self.PostNum
+                return 0
 
             time.sleep(random.uniform(0.8, 1))
             FollowButtom = find_images(

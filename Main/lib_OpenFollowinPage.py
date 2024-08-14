@@ -74,19 +74,22 @@ class OpeningFollowingPage:
         time.sleep(random.uniform(1, 2))
 
         if self.PostNum != 1:
+            py.press('Right')
             for _ in range(1, self.PostNum-1):
                 while True:
                     url = copyurlUrl()
                     if url is not self.finished_following_post:
+                        return
+                    else:
                         py.press('Right')
-                        time.sleep(random.uniform(0.5, 0.8))
 
         time.sleep(random.uniform(0.6, 1))
-        py.press('f5')
-        time.sleep(random.uniform(2, 3))
 
     def openfollowingBox(self):
+
         self.validity()
+        py.press('f5')
+        time.sleep(random.uniform(2, 3))
         Locations = []
 
         Others = find_images(r'Images\others.png',

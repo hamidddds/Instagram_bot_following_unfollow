@@ -68,6 +68,8 @@ def get_screen_resolution():
     screen_width, screen_height = py.size()
     return screen_width, screen_height
 
+# write a class for all essential variables
+
 
 def EnterUrl(Nameurl):
     chrome_window = gw.getWindowsWithTitle('Google Chrome')[0]
@@ -109,6 +111,7 @@ if __name__ == "__main__":
     Number_of_following = 10
     following_flag = 1
     postnum = 1
+    total_follow = 0
     page_opener = openpage.OpeningFollowingPage()
     Follow_p = Following.Following(Number_of_following)
 
@@ -131,14 +134,19 @@ if __name__ == "__main__":
             Following_box_validity = page_opener.openfollowingBox()
 
             if Following_box_validity == 1:
+                temp = Number_of_following - Follow_p.Followed
+                Follow_p.Following_Number = max(temp, 0)
                 result = Follow_p.Finding_follow_buttom()
+                postnum = Follow_p.PostNum
 
-                if isinstance(result, tuple):
-                    _, postnum = result
-                if Number_of_following >= Follow_p.Followed:
-                    following_flag = 0
+            if Number_of_following <= Follow_p.Followed:
+                total_follow = total_follow + Number_of_following
+                print(f"total follow number is equal to = {total_follow}")
+                following_flag = 0
+
         else:
             while 1800-(time.time()-start_time) > 0:
                 hu.HumanLikeWait(20, 500, 500)
                 time.sleep(60)
+
                 following_flag = 1
