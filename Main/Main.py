@@ -1,3 +1,4 @@
+import pandas as pd
 import pygetwindow as gw
 from Logger import app_logger
 import Logger
@@ -34,6 +35,10 @@ def changewindowssize():
         # If the window is maximized, restore it first
         if chrome_window.isMaximized:
             chrome_window.restore()
+
+        # Wait a moment to ensure the window is fully restored before resizing
+        import time
+        time.sleep(0.5)  # Adjust the sleep time if needed
 
         # Set the desired width and height
         new_width = 1400
@@ -98,6 +103,8 @@ def EnterUrl(TargetName, type):
 
     hu.HumanLikeKeyboard(link)
     time.sleep(random.uniform(0.5, 0.8))
+    py.hotkey('Backspace')
+    time.sleep(0.5)
     py.press('enter')
     time.sleep(3)
 
@@ -116,24 +123,53 @@ def ProcessBar():
     NewProcess = t.Label(root, text='')
     NewProcess.pack_forget()
     root.update()
-    # bb = t.Label(root, text='salam %d' % a)
     return
 
 
 def initiate():
     clear_terminal()
-    # ProcessBar()
+    ProcessBar()
+
+
+def read_inputs():
+    file_path = os.path.join('data', 'table.xlsx')
+
+    # Check if the file exists
+    if not os.path.isfile(file_path):
+        raise FileNotFoundError(f"The file at {file_path} does not exist.")
+
+    # Read the Excel file
+    try:
+        df = pd.read_excel(file_path, engine='openpyxl')
+    except Exception as e:
+        raise RuntimeError(
+            f"An error occurred while reading the Excel file: {e}")
+
+    # Check if required columns exist
+    required_columns = ['Target Name', 'Type Name', 'Number Of follow']
+    for col in required_columns:
+        if col not in df.columns:
+            raise ValueError(
+                f"The column '{col}' is missing from the Excel file.")
+
+    # Read values
+    TargetName = df.loc[0, 'Target Name']
+    TargetType = df.loc[0, 'Type Name']
+    Number_of_following = df.loc[0, 'Number Of follow']
+
+    return TargetName, TargetType, Number_of_following
 
 
 if __name__ == "__main__":
     initiate()
+    changewindowssize()
+    TargetName, TargetType, Number_of_following = read_inputs()
     # TargetName = "academy.movafaghyat"
-    TargetType = "Hashtag"
-    TargetName = "tech"
-    Number_of_following = 15
+    # TargetType = "Hashtag"
+    # TargetName = "tech"
+    # Number_of_following = 5
     following_flag = 1
     postnum = 1
-    total_follow = 0
     page_opener = openpage.OpeningFollowingPage()
     Following_func = Following.Following(Number_of_following)
     Result = result.ResultsManager()
@@ -142,36 +178,28 @@ if __name__ == "__main__":
     print(f"Current screen resolution: {width}x{height}")
 
     # Check if the resolution is 1920x1080
-    changewindowssize()
-
-    start_time = time.time()
-
+    ChangeTheProcessBar('Following ...')
     while True:
         start_time = time.time()
 
         if following_flag == 1:
-            # ChangeTheProcessBar('Openning the webpage ...')
+            ChangeTheProcessBar('Openning the webpage ...')
             EnterUrl(TargetName=TargetName, type=TargetType)
-            # ChangeTheProcessBar('Following ...')
+
             page_opener.chose_post(postnum, Target=TargetType)
             Following_box_validity = page_opener.openfollowingBox()
 
             if Following_box_validity == 1:
-                temp = Number_of_following - Following_func.Followed
+                flag_finished_following = Following_func.Following_main()
 
-                if temp > 0:
-                    Following_func.Following_Number = temp
-                    Situation = Following_func.Finding_follow_buttom()
-
-                else:
-
-                    Result.update(target_name=TargetName, type_name=TargetType,
-                                  number_of_followed_today=Following_func.Followed, success_rate=80.0)
-                    following_flag = 0
-                    Following_func.Following_Number = Number_of_following
+            if flag_finished_following == 1:
+                Result.update(target_name=TargetName, TargetType=TargetType,
+                              number_of_followed=Number_of_following, success_rate=80.0)
+                following_flag = 0
+                flag_finished_following = 0
 
         else:
-            while 1800-(time.time()-start_time) > 0:
+            while 900-(time.time()-start_time) > 0:
                 hu.HumanLikeWait(20, 500, 500)
                 time.sleep(60)
 

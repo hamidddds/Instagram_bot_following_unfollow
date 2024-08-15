@@ -48,7 +48,7 @@ class OpeningFollowingPage:
         self.Followed = 0
         self.situation = 0
         self.finished_following_post = []
-        self.likecommentfowrward_position = (650, 500, 600, 400)
+        self.likecommentfowrward_position = (650, 350, 600, 550)
         # 0 means unsucess
         # 1 means it is sucess
         self.PostNum = 1  # 0 means it doesnt need to change the post
@@ -191,73 +191,6 @@ class OpeningFollowingPage:
         else:
             return 0
 
+
 # page_opener = OpeningFollowingPage()
 # page_opener.openfollowingBox()
-
-
-# like_bottom_location = find_images(
-#     r'Images\like_button.png',
-#     chrome_region=self.likecommentfowrward_position)
-
-# if like_bottom_location != None:
-#     Locations.append((like_bottom_location[0][0],
-#                       like_bottom_location[0][1]))
-# else:
-#     app_logger.info('Like buttom cannot be detected')
-#     print("Cannot detect the following page using Like buttom")
-#     self.screenshoterror("like_button_error",
-#                          region=self.likecommentfowrward_position)
-
-# comment_bottom_location = find_images(
-#     r'Images\Comment_button.png',
-#     chrome_region=self.likecommentfowrward_position)
-# print(comment_bottom_location)
-
-# if comment_bottom_location != None:
-#     Locations.append((comment_bottom_location[0][0],
-#                       comment_bottom_location[0][1]))
-# else:
-#     app_logger.info('comment buttom cannot be detected')
-#     print("Cannot detect the following page comment buttom")
-#     self.screenshoterror("CommentButtomError",
-#                          region=self.likecommentfowrward_position)
-
-# forward_bottom_location = find_images(
-#     r'Images\forward.png',
-#     chrome_region=self.likecommentfowrward_position)
-
-# if forward_bottom_location != None:
-#     Locations.append((forward_bottom_location[0][0],
-#                       forward_bottom_location[0][1]))
-# else:
-
-#     # app_logger.info('Forward buttom cannot be detected')
-#     print("Cannot detect the following page forward buttom")
-#     self.screenshoterror("ForwardButtomError",
-#                          region=self.likecommentfowrward_position)
-
-# if len(Locations) == 0:
-#     app_logger.error('Following page is not detected')
-#     self.screenshoterror("wrong page")
-#     print("wrong Page")
-#     return 0
-# else:
-#     for i in range(len(Locations)):
-#         for j in range(i, len(Locations)):
-#             location_coordinate = [(
-#                 Locations[i][0] + Locations[j][0]) / 2, (Locations[i][1] + Locations[j][1]) / 2]
-#             time.sleep(random.uniform(1, 1.5))
-#             if isinstance(location_coordinate, list):
-#                 location_coordinate = [
-#                     int(x) for x in location_coordinate]
-#             else:
-#                 location_coordinate = int(location_coordinate)
-#             hu.HumanLikeMove(
-#                 location_coordinate)
-#             time.sleep(0.4)
-#             py.moveRel(0, 30, 0.3)
-#             time.sleep(0.3)
-#             py.click()
-#             time.sleep(random.uniform(0.5, 1))
-#             if self.FollowingBox_validity() == 1:
-#                 return 1

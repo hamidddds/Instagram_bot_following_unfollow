@@ -42,22 +42,14 @@ def copyurlUrl():  # new
 
     # Get the URL from the clipboard
     url = pyperclip.paste()
-    # start_pos = url.find("https://") + len("https://")
-    # end_pos = url.find(".com")
-
-    # # Extract the substring between "https://" and ".com"
-    # extracted_part = url[start_pos:end_pos]
-
-    # url = extracted_part
     return url
 
 
 class Following:
-    def __init__(self, RemainedFollowed) -> None:
+    def __init__(self, NumberOfFullowing) -> None:
         self.scrollCount = 0
         self.Followed = 0
         self.situation = 0
-        # self.bbox = self.convertor()
         self.Following_box = (330, 330, 600, 600)
 
         self.inside_box_pos = (790+random.randint(-10, 10),
@@ -69,8 +61,7 @@ class Following:
         # 0 means it is under process
         self.im = None
         self.PostNum = 1  # 0 means it doesnt need to change the post
-        self.Following_Number = RemainedFollowed
-        # self.saved_following = []
+        self.Total_number_of_following = NumberOfFullowing
 
         self.initialize()
 
@@ -91,7 +82,10 @@ class Following:
         print('Follower list has oppened ...')
         print('Starting Following ...')
 
-    def Finding_follow_buttom(self):
+    def Following_main(self):
+        # add a controll function wich open limited page instead of many pages
+
+        self.Following_Number = self.Total_number_of_following-self.Followed
 
         check = self.CheckValidity()
 
@@ -99,23 +93,13 @@ class Following:
             print("cannot see the following box")
             return 0
 
-        first_iteration = True
-
         while True:
-
-            if not first_iteration:
-                hu.HumanLikeMove(self.inside_box_pos)
-                NowScroll = random.randint(-500, -400)
-                hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
-
-            first_iteration = False
-
             a = self.scoroll()
             # move out of box
             hu.HumanLikeMove(self.outside_box_pos)
 
             if a == 0:  # end of the scroll
-                self.PostNum = self.PostNum+1
+                self.EndOfScroll_validity()
                 return 0
 
             time.sleep(random.uniform(0.8, 1))
@@ -163,17 +147,6 @@ class Following:
                 NowScroll = random.randint(-500, -400)
                 hu.Humanlikescroll(NowScroll)  # 430 scroll kamele
                 time.sleep(0.5)
-                hu.HumanLikeMove(self.outside_box_pos)
-                time.sleep(0.5)
-                end_scroll = self.EndOfScroll()
-
-                if end_scroll == 1:
-                    self.finished_following_post.append(copyurlUrl())
-
-                    self.EndOfScroll_validity()
-                    self.PostNum = self.PostNum+1
-                    return 0  # end of scroll
-
                 FollowButtom = []
 
     def scoroll(self):
@@ -205,10 +178,7 @@ class Following:
                 end_scroll = self.EndOfScroll()
 
                 if end_scroll == 1:
-                    self.finished_following_post.append(copyurlUrl())
-
                     self.EndOfScroll_validity()
-                    self.PostNum = self.PostNum+1
                     return 0  # end of scroll
             else:
 
@@ -283,8 +253,7 @@ class Following:
                                 if Homepage == Name_Of_page:
                                     with open('my_list.json', 'w') as file:
                                         json.dump(self.saved_following, file)
-                                        self.situation = 10
-                                        # self.Followed = 0
+                                        self.Followed = 0
                                         return 1
                                 else:
                                     py.hotkey('ctrl', 'w')
@@ -341,5 +310,6 @@ class Following:
 
     def EndOfScroll_validity(self):
         if self.scrollCount > 20:
+            self.finished_following_post.append(copyurlUrl())
             with open('finished_following_post.json', 'w') as file:
                 json.dump(self.finished_following_post, file)
