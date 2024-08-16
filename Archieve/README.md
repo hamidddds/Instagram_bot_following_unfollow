@@ -1,2 +1,0 @@
-# InstagramCode
-Instagram Code
