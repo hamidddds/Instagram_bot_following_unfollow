@@ -103,6 +103,8 @@ def EnterUrl(TargetName, type):
 
     hu.HumanLikeKeyboard(link)
     time.sleep(random.uniform(0.5, 0.8))
+    py.hotkey('Space')
+    time.sleep(0.5)
     py.hotkey('Backspace')
     time.sleep(0.5)
     py.press('enter')
@@ -180,6 +182,7 @@ if __name__ == "__main__":
     # Check if the resolution is 1920x1080
     ChangeTheProcessBar('Following ...')
     while True:
+        postnum = 3
         start_time = time.time()
 
         if following_flag == 1:
@@ -194,12 +197,12 @@ if __name__ == "__main__":
 
             if flag_finished_following == 1:
                 Result.update(target_name=TargetName, type_name=TargetType,
-                              number_of_followed=Number_of_following, success_rate=80.0)
+                              number_of_followed=Number_of_following)
                 following_flag = 0
                 flag_finished_following = 0
 
         else:
-            while 900-(time.time()-start_time) > 0:
+            while 300-(time.time()-start_time) > 0:
                 hu.HumanLikeWait(20, 500, 500)
                 time.sleep(60)
 

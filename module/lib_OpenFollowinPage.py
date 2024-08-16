@@ -1,11 +1,10 @@
-from module.Lib_Finding_image_on_screen import find_images
+from .Lib_Finding_image_on_screen import find_images
 import random
 import os
-from Logger import app_logger
-import lib_HumanMove as hu
+from .Logger import app_logger
+from . import lib_HumanMove as hu
 import pyautogui as py
 import time
-import Logger
 import datetime
 import pyperclip
 import pygetwindow as gw
@@ -62,7 +61,8 @@ class OpeningFollowingPage:
 
        # self.chose_post()
 
-    def chose_post(self, post_num=None, Target="Page"):
+    def chose_post(self, post_num=1, Target="Page"):
+        self.PostNum = post_num
 
         if Target == "Page":
             self.First_post_location = [
@@ -70,9 +70,6 @@ class OpeningFollowingPage:
         elif Target == "Hashtag":
             self.First_post_location = (500+random.randint(-50, 50),
                                         520+random.randint(-50, 50))
-
-        if post_num is None:
-            post_num = self.PostNum
 
         hu.HumanLikeMove(self.First_post_location)
         hu.HumanLikeClick()
@@ -84,7 +81,7 @@ class OpeningFollowingPage:
             for _ in range(1, self.PostNum-1):
                 while True:
                     url = copyurlUrl()
-                    if url is not self.finished_following_post:
+                    if url is self.finished_following_post:
                         return
                     else:
                         py.press('Right')

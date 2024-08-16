@@ -1,6 +1,6 @@
 from PIL import ImageGrab, ImageChops
 from datetime import datetime
-import module.lib_HumanMove as hu
+from . import lib_HumanMove as hu
 import pyautogui as py
 import random
 import time
@@ -10,8 +10,8 @@ import os
 import platform
 import pygetwindow as gw
 import winsound
-import module.lib_OpenFollowinPage as openpage
-from module.Lib_Finding_image_on_screen import find_images
+from . import lib_OpenFollowinPage as openpage
+from .Lib_Finding_image_on_screen import find_images
 
 
 def clear_terminal():
@@ -58,12 +58,13 @@ class Following:
         self.outside_box_pos = (350+random.randint(-10, 10),
                                 450+random.randint(-30, -30))
         current_directory = os.path.dirname(__file__)
-        self.json_path = os.path.join(
-            current_directory, '..', 'data', 'finished_following_post.json')
-        # Get the path to the directory where lib_Follwoing.py is located
-        # Construct the relative path to the JSON file
+
+        self.finished_pages_path = os.path.join(
+            current_directory, '..', 'data', 'Finished_pages.json')
+
         self.json_path = os.path.join(
             current_directory, '..', 'data', 'my_list.json')
+
         # 0 means it is under process
         self.im = None
         self.PostNum = 1  # 0 means it doesnt need to change the post
@@ -79,11 +80,13 @@ class Following:
         else:
             self.saved_following = []
 
-        if os.path.exists('Finish_following_posts.json'):
-            with open(self.json_path, 'w') as file:
-                json.dump(self.finished_following_post, file)
+        if os.path.exists(self.finished_pages_path):
+            with open(self.finished_pages_path, 'w') as file:
+                self.Finished_pages = json.load(file)
         else:
-            self.finished_following_post = []
+            self.Finished_pages = []
+            with open(self.finished_pages_path, 'w') as file:
+                json.dump(self.Finished_pages, file)
 
         print('Follower list has oppened ...')
         print('Starting Following ...')
@@ -316,6 +319,6 @@ class Following:
 
     def EndOfScroll_validity(self):
         if self.scrollCount > 20:
-            self.finished_following_post.append(copyurlUrl())
-            with open(self.json_path, 'w') as file:
-                json.dump(self.finished_following_post, file)
+            self.Finished_pages.append(copyurlUrl())
+            with open(self.finished_pages_path, 'w') as file:
+                json.dump(self.Finished_pages, file)
