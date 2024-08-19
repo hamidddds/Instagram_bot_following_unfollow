@@ -81,9 +81,18 @@ class Following:
             self.saved_following = []
 
         if os.path.exists(self.finished_pages_path):
-            with open(self.finished_pages_path, 'w') as file:
-                self.Finished_pages = json.load(file)
+            # Check if the file is empty
+            if os.path.getsize(self.finished_pages_path) == 0:
+                # If the file is empty, write an empty list to it
+                self.Finished_pages = []
+                with open(self.finished_pages_path, 'w') as file:
+                    json.dump(self.Finished_pages, file)
+            else:
+                # Otherwise, load the content of the file
+                with open(self.finished_pages_path, 'r') as file:
+                    self.Finished_pages = json.load(file)
         else:
+            # If the file doesn't exist, create it with an empty list
             self.Finished_pages = []
             with open(self.finished_pages_path, 'w') as file:
                 json.dump(self.Finished_pages, file)

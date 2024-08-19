@@ -116,7 +116,7 @@ def HumanLikeClick():
 
 
 def Humanlikescroll(x):
-    RN = random.randint(1, 3)
+    RN = random.randint(1, 4)
     x1 = round(x/RN)
     x2 = x % RN
 

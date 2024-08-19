@@ -13,6 +13,7 @@ import platform
 import module.lib_OpenFollowinPage as openpage
 import module.lib_Follwoing as Following
 import module.lib_ResultManager as result
+import module.Lib_liking as liking
 
 
 class Results:
@@ -163,6 +164,7 @@ def read_inputs():
 
 
 if __name__ == "__main__":
+
     initiate()
     changewindowssize()
     TargetName, TargetType, Number_of_following = read_inputs()
@@ -170,11 +172,14 @@ if __name__ == "__main__":
     # TargetType = "Hashtag"
     # TargetName = "tech"
     # Number_of_following = 5
-    following_flag = 1
+    following_flag = 0
+    Liking_flag = 1
     postnum = 1
+    Time_liking = 60
     page_opener = openpage.OpeningFollowingPage()
     Following_func = Following.Following(Number_of_following)
     Result = result.ResultsManager()
+    like_func = liking.Liking_posts(Time_liking)
 
     width, height = get_screen_resolution()
     print(f"Current screen resolution: {width}x{height}")
@@ -182,7 +187,7 @@ if __name__ == "__main__":
     # Check if the resolution is 1920x1080
     ChangeTheProcessBar('Following ...')
     while True:
-        postnum = 3
+        wait_time = random.randint(1700, 2000)
         start_time = time.time()
 
         if following_flag == 1:
@@ -201,9 +206,18 @@ if __name__ == "__main__":
                 following_flag = 0
                 flag_finished_following = 0
 
-        else:
-            while 300-(time.time()-start_time) > 0:
-                hu.HumanLikeWait(20, 500, 500)
-                time.sleep(60)
+        if Liking_flag == 1:
+            EnterUrl(TargetName=" ", type="Page")
+            # ?? check validity
+            like_func.liking()
+            Liking_flag = 0
+
+        if Liking_flag == 0 and following_flag == 0:
+            while wait_time-(time.time()-start_time) > 0:
+
+                HumanWait = random.randint(600, 900)
+                hu.HumanLikeWait(HumanWait, 500, 500)
+                time.sleep(random.randint(300, 400))
 
             following_flag = 1
+            Liking_flag == 1

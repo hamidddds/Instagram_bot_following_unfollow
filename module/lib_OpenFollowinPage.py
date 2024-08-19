@@ -1,3 +1,4 @@
+import json
 from .Lib_Finding_image_on_screen import find_images
 import random
 import os
@@ -46,20 +47,20 @@ class OpeningFollowingPage:
         self.Followed_temp = 0
         self.Followed = 0
         self.situation = 0
-        self.finished_following_post = []
+        self.Finished_pages = []
         self.likecommentfowrward_position = (650, 350, 600, 550)
         # 0 means unsucess
         # 1 means it is sucess
         self.PostNum = 1  # 0 means it doesnt need to change the post
         self.EndOfScroll = None
-        # self.saved_following = []
+        current_directory = os.path.dirname(__file__)
+        self.finished_pages_path = os.path.join(
+            current_directory, '..', 'data', 'Finished_pages.json')
 
         self.initialize()
 
     def initialize(self):
         pass
-
-       # self.chose_post()
 
     def chose_post(self, post_num=1, Target="Page"):
         self.PostNum = post_num
@@ -76,20 +77,11 @@ class OpeningFollowingPage:
         # ??????????? validity?
         time.sleep(random.uniform(1, 2))
 
-        if self.PostNum != 1:
+        for _ in range(self.PostNum-1):
+            time.sleep(random.uniform(0.6, 1))
             py.press('Right')
-            for _ in range(1, self.PostNum-1):
-                while True:
-                    url = copyurlUrl()
-                    if url is self.finished_following_post:
-                        return
-                    else:
-                        py.press('Right')
-
-        time.sleep(random.uniform(0.6, 1))
 
     def openfollowingBox(self):
-
         self.validity()
         py.press('f5')
         time.sleep(random.uniform(2, 3))

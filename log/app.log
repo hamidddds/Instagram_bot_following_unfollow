@@ -382,3 +382,7 @@
 2024-08-14 18:55:25,194 - app_logger - INFO - Cannot Recognize The following page.
 2024-08-14 18:58:54,471 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
 2024-08-14 18:58:54,534 - app_logger - INFO - Cannot Recognize The following page.
+2024-08-17 06:24:00,391 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
+2024-08-17 06:24:00,493 - app_logger - INFO - Cannot Recognize The following page.
+2024-08-17 19:39:06,037 - app_logger - ERROR - Cannot detect the following page after multiple attempts.
+2024-08-17 19:39:06,115 - app_logger - INFO - Cannot Recognize The following page.

@@ -1,110 +1,41 @@
-import os
-import pandas as pd
+import pyautogui
+import numpy as np
+import cv2
+import time
 
 
-class ResultsManager:
-    def __init__(self, filename="results.xlsx") -> None:
-        self.folder = "data"
-        self.filename = os.path.join(self.folder, filename)
-        self.ensure_folder_exists()
+def is_plain_color(region):
+    # Take a screenshot of the specified region
+    screenshot = pyautogui.screenshot(region=region)
 
-    def ensure_folder_exists(self):
-        # Check if the folder exists
-        if not os.path.exists(self.folder):
-            print(f"Folder '{self.folder}' not found. Creating a new one.")
-            os.makedirs(self.folder)
+    # Convert the screenshot to a NumPy array
+    screenshot_np = np.array(screenshot)
 
-    def ensure_file_exists(self):
-        # Check if the file exists
-        if not os.path.exists(self.filename):
-            print(
-                f"File '{self.filename}' not found. Creating a new file with an empty table.")
-            # If the file doesn't exist, create a new DataFrame with columns but no rows
-            df = pd.DataFrame(columns=[
-                "Target Name", "Type Name", "Number of Followed", "Number of Followed-Today", "Success Rate"
-            ])
-            df.to_excel(self.filename, index=False)
+    # Convert the image from RGB to BGR (as OpenCV uses BGR format)
+    screenshot_bgr = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
 
-    def update(self, target_name, type_name=None, number_of_followed_today=None, success_rate=None):
-        try:
-            # Ensure the file exists
-            self.ensure_file_exists()
+    # Save the screenshot using OpenCV
+    cv2.imwrite("screenshot_region.png", screenshot_bgr)
 
-            # Load the existing Excel file
-            df = pd.read_excel(self.filename)
+    # Get the unique colors in the image
+    unique_colors = np.unique(
+        screenshot_bgr.reshape(-1, screenshot_bgr.shape[2]), axis=0)
 
-            # Check if the target_name exists
-            if target_name in df['Target Name'].values:
-                # Find the row with the matching Target Name
-                row_index = df.index[df['Target Name'] == target_name].tolist()
-                row_index = row_index[0]
+    # Check if there's only one unique color in the image
+    if len(unique_colors) == 1:
+        return True  # The region is plain color
+    else:
+        return False  # The region has something inside
 
-                # If the row exists and Number of Followed-Today is provided
-                if number_of_followed_today is not None:
-                    # Get current values
-                    current_followed_today = df.at[row_index, 'Number of Followed-Today'] if not pd.isna(
-                        df.at[row_index, 'Number of Followed-Today']) else 0
-                    current_followed = df.at[row_index, 'Number of Followed'] if not pd.isna(
-                        df.at[row_index, 'Number of Followed']) else 0
 
-                    # Update values
-                    df.at[row_index,
-                          'Number of Followed-Today'] = number_of_followed_today
-                    df.at[row_index, 'Number of Followed'] = current_followed + \
-                        number_of_followed_today
-
-                if success_rate is not None:
-                    df.at[row_index, 'Success Rate'] = success_rate
-
-                if type_name is not None:
-                    df.at[row_index, 'Type Name'] = type_name
-
-                print(f"Updated '{target_name}' successfully.")
-            else:
-                # If the target_name does not exist, add a new row
-                new_row = {
-                    "Target Name": target_name,
-                    "Type Name": type_name if type_name is not None else "",
-                    "Number of Followed": number_of_followed_today if number_of_followed_today is not None else 0,
-                    "Number of Followed-Today": number_of_followed_today if number_of_followed_today is not None else 0,
-                    "Success Rate": success_rate if success_rate is not None else 0.0  # Default value
-                }
-                new_row_df = pd.DataFrame([new_row])
-                df = pd.concat([df, new_row_df], ignore_index=True)
-                print(f"Added new entry for '{target_name}' successfully.")
-
-            # Calculate totals
-            if not df.empty:
-                # Remove existing Total row if it exists
-                df = df[df['Target Name'] != 'Total']
-
-                # Calculate totals from the remaining rows
-                total_number_followed = df['Number of Followed'].sum()
-                total_number_followed_today = df['Number of Followed-Today'].sum()
-
-                # Add the 'Total' row
-                total_row = pd.DataFrame([{
-                    "Target Name": "Total",
-                    "Type Name": "",
-                    "Number of Followed": total_number_followed,
-                    "Number of Followed-Today": total_number_followed_today,
-                    "Success Rate": ""
-                }])
-                df = pd.concat([df, total_row], ignore_index=True)
-
-            # Save the updated DataFrame back to the Excel file
-            df.to_excel(self.filename, index=False)
-
-        except Exception as e:
-            print(f"An error occurred: {e}")
-
+time.sleep(1)
 
 # Example usage
-filename = "results.xlsx"
+region1 = (289, 151, 900, 50)
+region2 = (1149, 143, 50, 600)
+region3 = (1000, 333, 300, 300)
 
-# Create an instance of ResultsManager
-manager = ResultsManager(filename)
-
-# Update or add a new entry
-manager.update("NewTarget13", type_name="Hashtag",
-               number_of_followed_today=30, success_rate=80.0)
+if is_plain_color(region1):
+    print("The region is a plain color.")
+else:
+    print("The region contains other elements.")
