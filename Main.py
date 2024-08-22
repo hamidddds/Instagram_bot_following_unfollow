@@ -172,10 +172,11 @@ if __name__ == "__main__":
     # TargetType = "Hashtag"
     # TargetName = "tech"
     # Number_of_following = 5
-    following_flag = 0
+    following_flag = 1
     Liking_flag = 1
+    flag_finished_following = 0
     postnum = 1
-    Time_liking = 60
+    Time_liking = 900
     page_opener = openpage.OpeningFollowingPage()
     Following_func = Following.Following(Number_of_following)
     Result = result.ResultsManager()
@@ -187,7 +188,7 @@ if __name__ == "__main__":
     # Check if the resolution is 1920x1080
     ChangeTheProcessBar('Following ...')
     while True:
-        wait_time = random.randint(1700, 2000)
+        wait_time = random.randint(3600, 3900)
         start_time = time.time()
 
         if following_flag == 1:
@@ -198,7 +199,8 @@ if __name__ == "__main__":
             Following_box_validity = page_opener.openfollowingBox()
 
             if Following_box_validity == 1:
-                flag_finished_following = Following_func.Following_main()
+                flag_finished_following = Following_func.Following_main(
+                    TargetName)
 
             if flag_finished_following == 1:
                 Result.update(target_name=TargetName, type_name=TargetType,
@@ -215,9 +217,9 @@ if __name__ == "__main__":
         if Liking_flag == 0 and following_flag == 0:
             while wait_time-(time.time()-start_time) > 0:
 
-                HumanWait = random.randint(600, 900)
+                HumanWait = random.randint(60, 120)
                 hu.HumanLikeWait(HumanWait, 500, 500)
-                time.sleep(random.randint(300, 400))
+                time.sleep(random.randint(600, 700))
 
             following_flag = 1
             Liking_flag == 1

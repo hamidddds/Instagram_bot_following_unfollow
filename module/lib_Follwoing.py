@@ -1,3 +1,4 @@
+import pandas as pd
 from PIL import ImageGrab, ImageChops
 from datetime import datetime
 from . import lib_HumanMove as hu
@@ -45,8 +46,52 @@ def copyurlUrl():  # new
     return url
 
 
+class UsersDetailManager:
+    def __init__(self):
+        current_directory = os.path.dirname(__file__)
+        self.user_details = os.path.join(
+            current_directory, '..', 'data', 'Users_detail.xlsx')
+        self.check_and_create_file()
+
+    def check_and_create_file(self):
+        if not os.path.exists(self.user_details):
+            # Create a new DataFrame with the required columns
+            df = pd.DataFrame(columns=['User name', 'page', 'date'])
+            df.to_excel(self.user_details, index=False)
+            print(f"File created: {self.user_details}")
+        else:
+            print(f"File already exists: {self.user_details}")
+
+    def add_new_entry(self, user_name, page, date):
+        # Ensure the date is a datetime object
+        if isinstance(date, datetime):
+            date = date.strftime('%Y-%m-%d')
+
+        # Load the existing Excel file
+        df = pd.read_excel(self.user_details)
+
+        # Ensure the page column is treated as a string
+        df['page'] = df['page'].astype(str)
+
+        # Create the new row as a DataFrame
+        new_row = pd.DataFrame(
+            {'User name': [user_name], 'page': [str(page)], 'date': [date]})
+
+        # Check if the existing DataFrame is empty
+        if df.empty:
+            df = new_row
+        else:
+            # Concatenate the new row to the existing DataFrame
+            df = pd.concat([df, new_row], ignore_index=True)
+
+        # Save the updated DataFrame back to the Excel file
+        df.to_excel(self.user_details, index=False)
+        print(f"New entry added: {new_row}")
+
+
 class Following:
     def __init__(self, NumberOfFullowing) -> None:
+        self.userdetail = UsersDetailManager()
         self.scrollCount = 0
         self.Followed = 0
         self.situation = 0
@@ -97,10 +142,9 @@ class Following:
             with open(self.finished_pages_path, 'w') as file:
                 json.dump(self.Finished_pages, file)
 
-        print('Follower list has oppened ...')
         print('Starting Following ...')
 
-    def Following_main(self):
+    def Following_main(self, TargetName):
         # add a controll function wich open limited page instead of many pages
 
         self.Following_Number = self.Total_number_of_following-self.Followed
@@ -153,7 +197,7 @@ class Following:
                     time.sleep(random.uniform(0.4, 0.6))
 
                 # ceheck the following is over or not
-                openeningPages = self.Open_pages()
+                openeningPages = self.Open_pages(TargetName)
                 if openeningPages == 1:
                     print("Done with following")
                     return 1
@@ -210,7 +254,7 @@ class Following:
             self.PostNum = self.PostNum+1
             return 1
 
-    def Open_pages(self):
+    def Open_pages(self, TargetName):
         time.sleep(0.5)
         # Send Alt+D to focus the address bar
         py.hotkey('alt', 'd')
@@ -258,7 +302,10 @@ class Following:
                         py.click()
                         time.sleep(0.5)
                         # winsound.Beep(1000, 200)
-                        time.sleep(random.uniform(1, 1.4))
+                        time.sleep(random.uniform(2, 3))
+                        current_date = datetime.now()
+                        self.userdetail.add_new_entry(
+                            user_name=username, page=TargetName, date=current_date)
 
                         self.Followed += 1
                         print("followed")
@@ -327,7 +374,6 @@ class Following:
             return 0
 
     def EndOfScroll_validity(self):
-        if self.scrollCount > 20:
-            self.Finished_pages.append(copyurlUrl())
-            with open(self.finished_pages_path, 'w') as file:
-                json.dump(self.Finished_pages, file)
+        self.Finished_pages.append(copyurlUrl())
+        with open(self.finished_pages_path, 'w') as file:
+            json.dump(self.Finished_pages, file)
